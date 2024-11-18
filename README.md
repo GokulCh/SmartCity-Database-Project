@@ -1,28 +1,25 @@
-# Welcome to Semecter Project repository
+# Smart City Database Project
 
-Use this project scaffold for all your deliverables for the semester long project including deliverables 4 through 7.
-Prior deliverables (1-3) did not require written documentation, and thus no repo.
+## Project Overview
 
-DO NOT USE THE *./docs* FOLDER unless you're comfy with what you're doing!  This folder name is reserved for use by Quarto. Quarto will create and manage a public, static website in this folder once we set it up in a later assignment. You should
-not store source files in the *./docs* folder unless you explicitly want them shared publically.
+This project aims to improve road safety in urban environments by including accident information in its database. The database will log accidents, including their severity and location. This information will be beneficial to city planners, allowing them to identify high-risk areas and take appropriate measures to enhance safety on those roads. The project also aims to warn drivers of potentially dangerous routes to ensure their safety by providing real-time accident information.
 
-I created a few folders that you can use or not:
+## Live Demo
 
-- *./src* - to hold your python/flask source code
-- *./reports* - to hold your deliverable reports. Within this folder I recommend a consistent naming convention for file like *deliver-08.qmd*, *deliver-12.qmd*, etc.
+You can view the live demo of the project on GitHub Pages: [Smart City Database Project](https://cmsc-vcu.github.io/cmsc408-fa2024-proj-blue/)
 
-YOU own this project so you can set up the folder structure as you will. I provided a simple structure to help you get started only.
+## Deliverables
 
-PLEASE MODIFY THIS README FILE per instructions in [project deliverable 8](https://virginiacommonwealth.instructure.com/courses/105097/assignments/966526).
-You'll need to be adding links to your previous *pitch* video for deliverable 3.  You'll also want to include team member info in the readme.
+- [Pitch Video (Deliverable 5)](https://vcu.mediaspace.kaltura.com/media/Deliverable+5+-+Database+Project/1_s76hanm0)
+- [Project Deliverable 8](https://github.com/cmsc-vcu/cmsc408-fa2024-proj-blue/tree/main/reports/deliverable_8)
+- [Project Deliverable 12](https://github.com/cmsc-vcu/cmsc408-fa2024-proj-blue/tree/main/reports/deliverable_12)
 
-To learn more about writing good README.md files, see:
+## Folder Structure
 
-<https://www.freecodecamp.org/news/how-to-write-a-good-readme-file/>
-
-This is a scaffold project. I’ll be providing scaffolds throughout the
-semester to get you working faster, and to make grading much easier for
-the TA team.
-
-Good luck!
-
+- `reports/`: Contains all the deliverable reports.
+  - `deliverable_8/`: Contains files related to Project Deliverable 8.
+    - `deliver-08.qmd`: The main report file for Deliverable 8.
+    - `deliver-08.css`: CSS file for styling the HTML output.
+    - `deliver-08.html`: HTML output generated from `deliver-08.qmd`.
+  - `deliverable_12/`: Placeholder for the report for Project Deliverable 12.
+- `src/`: Source files for the project.

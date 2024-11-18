@@ -1,0 +1,461 @@
+---
+title: Project Deliverable 8 | Database Design
+date: last-modified
+author:
+    - name: Gokul Chaluvadi
+      email: chaluvadig@vcu.edu
+    - name: Ryan Ta
+      email: tard@vcu.edu
+format:
+    html:
+        embed-resources: true
+        html-math-method: katex
+        theme: minty
+        css: deliver-08.css
+        toc: true
+---
+
+## Project Overview
+
+This project aims to improve road safety in urban environments by including accident information in its database. The database will log accidents, including their severity and location. This information will be beneficial to city planners, allowing them to identify high-risk areas and take appropriate measures to enhance safety on those roads. For example, they might consider installing traffic cameras, improving lighting, or implementing traffic calming measures in areas identified as accident hotspots. The project also aims to warn drivers of potentially dangerous routes to ensure their safety. By providing real-time accident information, the system can alert drivers to avoid roads where accidents have recently occurred, reducing the risk of further incidents. This focus on accident data and its use in both urban planning and driver alerts demonstrates a commitment to creating safer roads for all.
+
+### Key Deliverables
+
+- [Pitch Video (Deliverable 5)](https://vcu.mediaspace.kaltura.com/media/Deliverable+5+-+Database+Project/1_s76hanm0)
+- [Design Video (Deliverable 8)](https://vcu.mediaspace.kaltura.com/media/Project+Deliverable+8+_+Database+Design/1_mabvnbwa)
+- [GitHub Repository](https://github.com/cmsc-vcu/cmsc408-fa2024-proj-blue)
+
+---
+
+## Problem Description
+
+### Problem Domain
+
+Richmond is a densely populated urban area, where traffic congestion is a daily challenge for drivers. Students, commuters, and delivery personnel frequently encounter delays caused by road construction, high traffic volumes, and, more critically, traffic accidents. Accidents not only disrupt traffic flow but also pose significant safety risks to drivers and pedestrians. This issue is not unique to Richmond; it is prevalent in urban centers worldwide. Traffic accidents contribute to unpredictable travel times, heightened stress, and increased danger on the roads. Our proposed database will focus on Richmond and provide real-time notifications of accidents, helping drivers avoid hazardous areas and improving road safety.
+
+### Need
+
+Traffic accidents in Richmond present serious safety and logistical challenges. These incidents not only lead to delays but also increase the risk of further accidents and complicate emergency response efforts. A dedicated traffic accident database is crucial to address these problems. This system will provide real-time updates on accidents, enabling drivers to avoid accident-prone areas, reducing congestion, and improving emergency response coordination.
+
+Key problems the database aims to solve:
+
+1. **Accident Avoidance**: Drivers can receive real-time notifications about accidents in their vicinity, allowing them to steer clear of danger zones and reduce the likelihood of secondary accidents.
+2. **Faster Emergency Response**: Accurate, up-to-date information will help emergency services respond more quickly to accident sites, potentially saving lives by reducing response times.
+3. **Data for Road Safety Improvements**: The database will collect and analyze data on accident frequency and locations, empowering city officials to identify dangerous areas and implement safety measures, such as improving signage or redesigning intersections.
+
+By focusing on traffic accidents, this database will significantly enhance road safety, reduce congestion, and support the efficient management of traffic in Richmond.
+
+### Context, Scope, and Perspective
+
+Traffic accidents are a primary cause of traffic congestion and road hazards in Richmond. The two most common contributors to traffic are the sheer volume of vehicles and accidents, which often exacerbate each other. By providing real-time accident updates, drivers can avoid congested or hazardous areas, reducing traffic delays and minimizing their risk of being involved in accidents themselves. This proactive approach will shorten commute times, decrease accident rates, and improve overall traffic conditions.
+
+Furthermore, when accidents are avoided, traffic congestion caused by these incidents dissipates more quickly. Reduced traffic also results in fewer accidents, creating a feedback loop that improves road conditions for all. The ultimate goal is to create safer and more predictable driving experiences, helping drivers reach their destinations more efficiently and securely.
+
+### User Roles and Use Cases
+
+1. **City Officials and Traffic Management Centers**  
+   - **Needs**: Access to detailed accident information—severity, location, and time of occurrence—to coordinate emergency responses and manage traffic flow around accident sites.  
+   - **Use Case**: A city official monitors a new accident report at a major intersection. They adjust traffic signals and dispatch emergency responders to the location, minimizing delays and improving response times.
+
+2. **Drivers (Commuters, Delivery Personnel, etc.)**  
+   - **Needs**: Real-time updates on nearby accidents to avoid delays and danger. The system will provide alternative routes to help drivers bypass accident sites.  
+   - **Use Case**: A commuter receives a notification about an accident along their usual route. The system suggests an alternate route, allowing the driver to avoid the accident and reduce their travel time.
+
+3. **Urban Planners**  
+   - **Needs**: Data on accident trends and high-risk areas to recommend infrastructure improvements, such as intersection redesigns or speed limit changes.  
+   - **Use Case**: An urban planner analyzes accident data from the past year and identifies a street with a high frequency of incidents. They use this information to propose a safer road layout.
+
+4. **Emergency Services**  
+   - **Needs**: Immediate access to detailed accident information to prioritize emergency response and navigate efficiently to the scene.  
+   - **Use Case**: An emergency dispatcher uses the database to locate the exact site of an accident and directs ambulances and police units, reducing response times and improving care for accident victims.
+
+### Security and Privacy
+
+Since the database will handle sensitive data related to traffic accidents, robust security measures will be essential to ensure privacy and protect users' information.
+
+- **User Authentication**: Only authorized personnel, such as city officials and emergency responders, will have access to detailed accident reports. Role-based access control will restrict data visibility based on user roles.
+- **Data Encryption**: All data, including accident details and user information, will be encrypted both in transit and at rest to prevent unauthorized access.
+- **Access Control**: Public users, such as drivers, will only have access to anonymized real-time alerts. Detailed accident reports will be available exclusively to traffic management centers and emergency services.
+- **Anonymization**: Personal data of individuals involved in accidents will be anonymized. Only authorized officials will have access to detailed information for emergency response and legal purposes.
+- **Compliance**: The system will comply with all relevant data protection regulations, ensuring that sensitive information is securely handled and managed.
+
+By implementing these security protocols, the database will protect user privacy while providing real-time accident data that benefits public safety and traffic management.
+
+---
+
+## Database Design
+
+### Entity-Relationship Diagram (ERD)
+
+The ERD for the traffic accident database is designed using Crow’s Foot notation to represent the detailed relationships between entities and Chen notation to show the high-level architecture.
+
+**ERD Breakdown**:
+
+1. **Accidents** is the central entity and stores details of individual accidents. It is linked to multiple entities like `Users`, `Locations`, `Emergency Services`, and optionally `Vehicles` and `Weather Conditions`.
+2. **Users** represents the individuals involved in accidents or reporting them, and can be of various roles (drivers, city officials, emergency responders).
+3. **Locations** holds geographic information about where the accidents occurred.
+4. **Emergency Services** stores data about the emergency response to accidents.
+5. **User_Accidents** is a junction entity that records the involvement of users in specific accidents, specifying their role in the accident (e.g., witness, driver).
+
+**Design Choices**:
+
+- The separation of entities ensures **data normalization**, reduces redundancy, and improves query efficiency. For instance, `Accidents` and `Locations` are stored separately to prevent duplication of location details.
+- **Trade-offs**: While separating entities helps with organization, it leads to more complex queries involving JOINs. However, this trade-off is essential to maintain a well-structured, scalable database.
+
+Chen Notation:
+```{dot}
+graph ER {  
+    bgcolor=transparent;   
+
+    layout=neato  // Very useful for auto placing nodes.  Minimizes node/edge energy in system
+    scale=1.2     // changes size of shapes all at once
+
+
+    // Set defaults for nodes
+    node [fontname="Helvetica,Arial,sans-serif",fontsize=10] // Smaller font size, reduced node size
+
+    // Define nodes
+    node [shape=box];
+    Accidents; Users; Locations; Emergency_Services, User_Accidents;
+    node [shape=ellipse];
+    {node [label="ID"] id0; id1; id2; id3;}
+    date; severity; description; street; intersection; latitude; longitude; name; role; contact; type; response_time; user; accident; involvement;
+    
+    node [shape=diamond,style=filled,color=lightgrey]; 
+    "has1"; "has2"; "has3";
+
+    // Set defaults for edges then draw edges
+    edge [fontname="Helvetica,Arial,sans-serif",fontsize=10] // Reduced font size for edges
+
+    Accidents -- id0;
+    Accidents -- date;
+    Accidents -- severity;
+    Accidents -- description;
+    Accidents -- has1;
+    has1 -- Locations;
+    Locations -- id1;
+    Locations -- street;
+    Locations -- intersection;
+    Locations -- latitude;
+    Locations -- longitude;
+    Users -- id2;
+    Users -- name;
+    Users -- contact
+    Users -- role;
+    Accidents -- has2;
+    Emergency_Services -- has2;
+    Emergency_Services -- id3;
+    Emergency_Services -- type;
+    Emergency_Services -- response_time;
+    Accidents -- has3;
+    Users -- has3;
+    User_Accidents -- has3;
+    User_Accidents -- user;
+    User_Accidents -- accident;
+    User_Accidents -- involvement;
+}
+```
+
+Crow's Foot Notation:
+```{mermaid}
+erDiagram 
+    
+    ACCIDENTS {
+        int accident_id PK
+        Datetime date_time
+        String severity
+        String description
+        int location_id FK
+    }
+
+    LOCATIONS {
+        int location_id PK
+        String street
+        String intersection
+        double latitude
+        double longitude
+    }
+
+    USERS {
+        int user_id PK
+        String name
+        String user_role
+        String contact_info
+    }
+
+    EMERGENCY_SERVICES {
+        int service_id PK
+        String service_type
+        String response_time
+        String accident_id FK
+    }
+
+    USER_ACCIDENTS {
+        int user_id PK,FK
+        int accident_id PK,FK
+        String involvement_type
+    }
+
+    USERS ||--o{ USER_ACCIDENTS : "participates in"
+    ACCIDENTS ||--o{ USER_ACCIDENTS : "involves"
+    LOCATIONS ||--o{ ACCIDENTS : "occurs at"
+    ACCIDENTS ||--o{ EMERGENCY_SERVICES : "responded to by"
+```
+---
+
+### Relational Schema
+
+Below are the detailed relational schemas, with attributes, data types, and constraints.
+
+#### 1. **Accidents**
+- **Attributes**:
+  - `accident_id`: Integer, Primary Key
+  - `date_time`: Datetime
+  - `severity`: String (must be one of 'minor', 'moderate', 'severe')
+  - `description`: String
+  - `location_id`: Integer, Foreign Key referencing `Locations`
+  
+- **Constraints**:
+  - `severity` must be within the predefined set ('minor', 'moderate', 'severe').
+
+#### 2. **Locations**
+- **Attributes**:
+  - `location_id`: Integer, Primary Key
+  - `street`: String
+  - `intersection`: String
+  - `latitude`: Decimal (Precision: 8, Scale: 6)
+  - `longitude`: Decimal (Precision: 9, Scale: 6)
+
+- **Constraints**:
+  - Latitude and longitude values must fall within their respective valid ranges.
+
+#### 3. **Users**
+- **Attributes**:
+  - `user_id`: Integer, Primary Key
+  - `name`: String
+  - `user_role`: String (one of 'driver', 'city_official', 'responder')
+  - `contact_info`: String (email or phone)
+
+#### 4. **Emergency Services**
+- **Attributes**:
+    - `service_id`: Integer, Primary Key
+    - `service_type`: String (must be one of 'ambulance', 'police', 'fire_truck')
+    - `response_time`: Integer (minutes)
+    - `accident_id`: Integer, Foreign Key referencing `Accidents`
+
+#### 5. **User_Accidents**
+- **Attributes**:
+    - `user_id`: Integer, Primary Key, Foreign Key, referencing Users
+    - `accident_id`: Integer, Primary Key, Foreign Key, referencing Accidents
+    - `involvement_type`: String (must be one of 'witness', 'driver', 'reporter')
+
+---
+
+### Functional Dependencies and Normalization
+
+#### Functional Dependencies:
+
+- **Accidents**: `accident_id (PK) → date_time, severity, description, location_id (FK)`
+- **Locations**: `location_id (PK) → street, intersection, latitude, longitude`
+- **Users**: `user_id (PK) → name, user_role, contact_info`
+- **Emergency Services**: `service_id (PK) → service_type, response_time, accident_id (FK)`
+- **User_Accidents**: `user_id, accident_id (PK, FK) → involvement_type`
+
+#### Normalization:
+
+Each relation satisfies BCNF because all non-trivial functional dependencies involve a superkey. No multivalued dependencies exist in the current schema, making it compliant with 4NF.
+
+**Normalization Process**:
+
+1. **Accidents**: 
+   - Initially included location details such as street name, intersection, latitude, and longitude. To satisfy BCNF, the `Accidents` table was split into the `Locations` table. This ensures that all location attributes depend solely on `location_id` (the primary key of the `Locations` table), thereby eliminating redundancy.
+  
+2. **Users**: 
+   - The `Users` table was separated from the `Accidents` table to avoid storing user-related information (such as name and user role) redundantly for each accident. By doing so, we ensure that the user data is maintained independently and can be referenced via the `user_id` foreign key in the `User_Accidents` table.
+
+3. **User_Accidents**:
+   - The `User_Accidents` table was introduced as a bridge entity to track the involvement of users in accidents. This table avoids redundancy by separating the roles and involvement details of users in each accident, while maintaining normalized relations for both users and accidents.
+
+4. **Emergency Services**: 
+   - The `Emergency Services` relation was split into its own entity to handle scenarios where multiple emergency services may respond to a single accident. The `accident_id` in the `Emergency Services` table acts as a foreign key referencing the `Accidents` table, maintaining the relationship while avoiding redundancy.
+
+---
+
+### Specific Queries
+
+Here are 20 distinct queries in relational algebra that the database can answer:
+
+1. List all accidents with a severity of 'severe'.
+    $$\sigma(\text{severity} = \text{'severe'})(\text{Accidents})$$
+
+2. Retrieve the number of accidents that occurred at a specific location (e.g., $(\text{location\_id} = 101)$).
+   $$\text{COUNT}(\text{accident\_id})(\sigma(\text{location\_id} = 101)(\text{Accidents}))$$
+
+3. Display the total number of accidents reported by each user.
+   $$\pi(\text{user\_id}, \text{COUNT}(\text{accident\_id}))(\text{Accidents}) \text{ GROUP BY user\_id}$$
+
+4. Find the average response time of emergency services.
+   $$\text{AVG}(\text{response\_time})(\text{Emergency Services})$$
+
+5. List all accidents that involved a specific vehicle type (e.g., 'car').
+   $$\pi(\text{accident\_id})(\sigma(\text{vehicle\_type} = \text{'car'})(\text{Vehicles}))$$
+
+6. Find the date and time of accidents that occurred at a specific intersection.
+   $$\pi(\text{date\_time})(\sigma(\text{intersection} = \text{'Main St \& 1st Ave'})(\text{Locations} \bowtie \text{Accidents}))$$
+
+7. List users who reported more than 5 accidents.
+   $$\pi(\text{user\_id})(\text{COUNT}(\text{accident\_id}) > 5)(\text{Accidents}) \text{ GROUP BY user\_id}$$
+
+8. Show all accidents that occurred during rainy weather conditions.
+   $$\pi(\text{accident\_id})(\sigma(\text{weather\_type} = \text{'rainy'})(\text{Weather Conditions}))$$
+
+9. Retrieve all accident details where police responded.
+   $$\pi(\text{accident\_id}, \text{description}, \text{service\_type})(\sigma(\text{service\_type} = \text{'police'})(\text{Emergency Services} \bowtie \text{Accidents}))$$
+
+10. List all notifications sent to a specific user.
+    $$\pi(\text{message})(\sigma(\text{recipient\_id} = 202)(\text{Traffic Alerts}))$$
+
+11. Find the earliest recorded accident date.
+    $$\text{MIN}(\text{date\_time})(\text{Accidents})$$
+
+12. List all accidents that occurred at a specific latitude and longitude.
+    $$\pi(\text{accident\_id})(\sigma(\text{latitude} = 37.7749 \text{ AND } \text{longitude} = -122.4194)(\text{Locations} \bowtie \text{Accidents}))$$
+
+13. Show all accidents that had a response time longer than 30 minutes.
+    $$\pi(\text{accident\_id})(\sigma(\text{response\_time} > 30)(\text{Emergency Services}))$$
+
+14. Find all drivers involved in accidents on a specific date.
+    $$\pi(\text{user\_id})(\sigma(\text{date\_time} = \text{'2024-03-01'})(\text{Accidents} \bowtie \text{Users}))$$
+
+15. List all emergency responders who attended accidents involving severe injuries.
+    $$\pi(\text{user\_id})(\sigma(\text{severity} = \text{'severe'})(\text{Accidents} \bowtie \text{Emergency Services} \bowtie \text{Users}))$$
+
+16. Count how many accidents occurred on each street.
+    $$\pi(\text{street}, \text{COUNT}(\text{accident\_id}))(\text{Locations} \bowtie \text{Accidents}) \text{ GROUP BY street}$$
+
+17. Show all accidents that occurred between two specific times.
+    $$\pi(\text{accident\_id}, \text{date\_time})(\sigma(\text{date\_time} \text{ BETWEEN } \text{'2024-03-01 08:00'} \text{ AND } \text{'2024-03-01 10:00'})(\text{Accidents}))$$
+
+18. List all accident descriptions that include "multi-car".
+    $$\pi(\text{description})(\sigma(\text{description} \text{ LIKE } \text{multi-car})(\text{Accidents}))$$
+
+19. Display the response time for all accidents reported by a specific user.
+    $$\pi(\text{response\_time})(\sigma(\text{reported\_by} = 301)(\text{Accidents} \bowtie \text{Emergency Services}))$$
+
+20. Find the five most recent accidents.
+    $$\pi(\text{accident\_id}, \text{date\_time})(\text{Accidents} \text{ ORDER BY } \text{date\_time DESC LIMIT } 5)$$
+
+---
+
+### Sample Data
+
+Here is some sample data to illustrate how data can be populated in the database.
+
+#### **Accidents**:
+
+| accident_id | date_time           | severity | description              | location_id | user_id |
+|-------------|---------------------|----------|--------------------------|-------------|-------------|
+| 1           | 2024-03-01 08:30:00 | severe   | Multi-car collision       | 101         | 301         |
+| 2           | 2024-03-05 15:00:00 | moderate | Rear-end collision        | 102         | 302         |
+| 3           | 2024-04-10 09:15:00 | minor    | Single vehicle crash      | 103         | 301         |
+| 4           | 2024-04-11 14:45:00 | severe   | Pedestrian hit by vehicle | 104         | 303         |
+| 5           | 2024-05-02 18:10:00 | moderate | Two-car fender bender     | 105         | 304         |
+| 6           | 2024-05-15 07:55:00 | severe   | Motorcycle collision      | 106         | 305         |
+| 7           | 2024-05-18 10:30:00 | minor    | Minor rear-end collision  | 107         | 306         |
+| 8           | 2024-06-01 12:25:00 | severe   | Multi-vehicle accident    | 108         | 307         |
+| 9           | 2024-06-10 20:45:00 | moderate | Vehicle hit road divider  | 109         | 308         |
+| 10          | 2024-06-20 16:20:00 | minor    | Bicycle collision         | 110         | 309         |
+
+---
+
+#### **Locations**:
+
+| location_id | street          | intersection          | latitude  | longitude  |
+|-------------|-----------------|-----------------------|-----------|------------|
+| 101         | Main St         | Main St & 1st Ave     | 37.7749   | -122.4194  |
+| 102         | Elm St          | Elm St & 2nd Ave      | 37.8044   | -122.2711  |
+| 103         | Pine St         | Pine St & 3rd Ave     | 37.7648   | -122.4269  |
+| 104         | Oak St          | Oak St & 5th Ave      | 37.7892   | -122.4014  |
+| 105         | Cedar St        | Cedar St & 4th Ave    | 37.7856   | -122.4316  |
+| 106         | Maple St        | Maple St & 7th Ave    | 37.7654   | -122.4181  |
+| 107         | Birch St        | Birch St & 6th Ave    | 37.7758   | -122.4235  |
+| 108         | Ash St          | Ash St & 8th Ave      | 37.7811   | -122.4568  |
+| 109         | Redwood St      | Redwood St & 9th Ave  | 37.7914   | -122.4793  |
+| 110         | Willow St       | Willow St & 10th Ave  | 37.8002   | -122.4821  |
+
+---
+
+#### **Users**:
+
+| user_id | name              | user_role        | contact_info         |
+|---------|-------------------|------------------|----------------------|
+| 301     | John Doe          | driver           | john@example.com     |
+| 302     | Jane Smith        | responder        | jane@example.com     |
+| 303     | Alice Brown       | driver           | alice@example.com    |
+| 304     | Bob Johnson       | city_official    | bob.johnson@city.gov |
+| 305     | Charlie Davis     | driver           | charlie@example.com  |
+| 306     | Emily Clark       | responder        | emily@example.com    |
+| 307     | Frank Lee         | driver           | frank@example.com    |
+| 308     | Grace Taylor      | responder        | grace@example.com    |
+| 309     | Henry Martinez    | driver           | henry@example.com    |
+| 310     | Isabelle Garcia   | city_official    | isabelle@city.gov    |
+
+---
+
+#### **Emergency Services**:
+
+| service_id | service_type | response_time | accident_id |
+|------------|--------------|---------------|-------------|
+| 1          | police       | 12            | 1           |
+| 2          | ambulance    | 8             | 1           |
+| 3          | fire_truck   | 15            | 2           |
+| 4          | police       | 10            | 3           |
+| 5          | ambulance    | 7             | 4           |
+| 6          | fire_truck   | 20            | 5           |
+| 7          | ambulance    | 6             | 6           |
+| 8          | police       | 12            | 7           |
+| 9          | ambulance    | 9             | 8           |
+| 10         | fire_truck   | 18            | 9           |
+
+#### **User Accidents**
+
+| user_id | accident_id | involvement_type |
+|---------|-------------|------------------|
+| 301     | 1           | driver           |
+| 302     | 1           | responder        |
+| 301     | 3           | driver           |
+| 303     | 4           | driver           |
+| 304     | 5           | city_official    |
+| 305     | 6           | driver           |
+| 306     | 6           | responder        |
+| 307     | 8           | driver           |
+| 308     | 8           | responder        |
+| 309     | 10          | driver           |
+
+---
+
+## Project Management
+
+### Project Schedule
+
+GANTT Chart:
+
+```{mermaid}
+gantt
+    title Project Timeline
+    dateFormat  YYYY-MM-DD
+    axisFormat %m-%d-%y
+
+    Section Phase 3 - Website Development & Docker Setup
+    Frontend UI Design :2024-10-13, 2w
+    Docker Container Setup :2024-10-13, 2w
+    Complete Front End : milestone, 2024-10-30, 0d
+    Complete End-to-End Integration : milestone, 2024-11-17, 0d
+
+    Section Phase 4 - Final Implementation & Submission
+    Testing & Debugging :2024-11-24, 1w
+    Database Implementation Report Draft/Video : milestone, 2024-12-12, 0d
+    Final Project Submission : milestone, 2024-12-12, 0d
+
+
+```
