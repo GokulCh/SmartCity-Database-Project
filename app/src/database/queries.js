@@ -1,61 +1,51 @@
-const db = require('./db');
+import { db } from "./db.js";
 
-const getAllAccidents = (db) => {
-  return new Promise((resolve, reject) => {
-    db.query('SELECT * FROM Accidents', (err, results) => {
-      if (err) {
-        return reject('Error fetching accidents: ' + err);
-      }
-      resolve(results);
-    });
-  });
+const getAllAccidents = async () => {
+  try {
+    const [results] = await db.query("SELECT * FROM Accidents");
+    return results;
+  } catch (err) {
+    throw new Error("Error fetching accidents: " + err);
+  }
 };
 
-const getAllUsers = (db) => {
-  return new Promise((resolve, reject) => {
-    db.query('SELECT * FROM Users', (err, results) => {
-      if (err) {
-        return reject('Error fetching users: ' + err);
-      }
-      resolve(results);
-    });
-  });
+const getAllUsers = async () => {
+  try {
+    const [results] = await db.query("SELECT * FROM Users");
+    return results;
+  } catch (err) {
+    throw new Error("Error fetching users: " + err);
+  }
 };
 
-const getAllLocations = (db) => {
-  return new Promise((resolve, reject) => {
-    db.query('SELECT * FROM Locations', (err, results) => {
-      if (err) {
-        return reject('Error fetching locations: ' + err);
-      }
-      resolve(results);
-    });
-  });
+const getAllLocations = async () => {
+  try {
+    const [results] = await db.query("SELECT * FROM Locations");
+    return results;
+  } catch (err) {
+    throw new Error("Error fetching locations: " + err);
+  }
 };
 
-const getAllEmergencyServices = (db) => {
-  return new Promise((resolve, reject) => {
-    db.query('SELECT * FROM Emergency_Services', (err, results) => {
-      if (err) {
-        return reject('Error fetching emergency services: ' + err);
-      }
-      resolve(results);
-    });
-  });
+const getAllEmergencyServices = async () => {
+  try {
+    const [results] = await db.query("SELECT * FROM Emergency_Services");
+    return results;
+  } catch (err) {
+    throw new Error("Error fetching emergency services: " + err);
+  }
 };
 
-const getAllUserAccidents = (db) => {
-  return new Promise((resolve, reject) => {
-    db.query('SELECT * FROM User_Accidents', (err, results) => {
-      if (err) {
-        return reject('Error fetching user accidents: ' + err);
-      }
-      resolve(results);
-    });
-  });
+const getAllUserAccidents = async () => {
+  try {
+    const [results] = await db.query("SELECT * FROM User_Accidents");
+    return results;
+  } catch (err) {
+    throw new Error("Error fetching user accidents: " + err);
+  }
 };
 
-module.exports = {
+export {
   getAllAccidents,
   getAllUsers,
   getAllLocations,
