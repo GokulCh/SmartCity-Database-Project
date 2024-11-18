@@ -44,20 +44,37 @@ const AppBar = () => {
     const sectionIds = navItems.map(item => item.href.replace('#', ''));
     const sections = sectionIds.map(id => document.getElementById(id));
 
-    const observer = new IntersectionObserver(
-      entries => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            setActiveSection(entry.target.id);
+    const handleScroll = () => {
+      const viewportCenter = window.innerHeight / 2;
+
+      let closestSection = null;
+      let closestDistance = Infinity;
+
+      sections.forEach(section => {
+        if (section) {
+          const rect = section.getBoundingClientRect();
+          const sectionCenter = rect.top + rect.height / 2;
+          const distanceToCenter = Math.abs(sectionCenter - viewportCenter);
+
+          if (distanceToCenter < closestDistance) {
+            closestDistance = distanceToCenter;
+            closestSection = section;
           }
-        });
-      },
-      { threshold: 1 } // Trigger when 50% of the section is visible
-    );
+        }
+      });
 
-    sections.forEach(section => section && observer.observe(section));
+      if (closestSection) {
+        setActiveSection(closestSection.id);
+      }
+    };
 
-    return () => observer.disconnect();
+    // Run on scroll and initial load
+    handleScroll();
+    window.addEventListener('scroll', handleScroll);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
   }, [navItems]);
 
   return (

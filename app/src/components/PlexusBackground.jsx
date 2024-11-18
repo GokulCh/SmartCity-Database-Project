@@ -44,9 +44,15 @@ const PlexusBackground = () => {
         this.x += this.vx;
         this.y += this.vy;
 
-        // Bounce off edges
-        if (this.x < 0 || this.x > canvas.width) this.vx = -this.vx;
-        if (this.y < 0 || this.y > canvas.height) this.vy = -this.vy;
+        // Bounce off edges and change base velocity
+        if (this.x < 0 || this.x > canvas.width) {
+          this.vx = -this.vx;
+          this.baseVx = -this.baseVx; // Flip base velocity
+        }
+        if (this.y < 0 || this.y > canvas.height) {
+          this.vy = -this.vy;
+          this.baseVy = -this.baseVy; // Flip base velocity
+        }
 
         // Apply tug effect if near mouse and mouse was recently moved
         if (mouse.x && mouse.y && Date.now() - mouse.lastMoved < 2000) {
@@ -69,14 +75,14 @@ const PlexusBackground = () => {
 
     const init = () => {
       particles = [];
-      const particleCount = Math.min(100, (canvas.width * canvas.height) / 20000);
+      const particleCount = Math.min(125, (canvas.width * canvas.height) / 15000);
       for (let i = 0; i < particleCount; i++) {
         particles.push(new Particle());
       }
     };
 
     const drawLines = (p1, p2, distance) => {
-      const opacity = 1 - distance / 100;
+      const opacity = 1 - distance / 110;
       ctx.beginPath();
       ctx.moveTo(p1.x, p1.y);
       ctx.lineTo(p2.x, p2.y);
@@ -101,7 +107,7 @@ const PlexusBackground = () => {
           const dy = particles[j].y - particle.y;
           const distance = Math.sqrt(dx * dx + dy * dy);
 
-          if (distance < 100) {
+          if (distance < 110) {
             drawLines(particle, particles[j], distance);
           }
         }
@@ -120,7 +126,7 @@ const PlexusBackground = () => {
     };
   }, []);
 
-  return <canvas ref={canvasRef} className="absolute top-0 left-0 w-full h-full -z-10 fade-in-medium" />;
+  return <canvas ref={canvasRef} className="absolute top-0 left-0 w-full h-full -z-10" />;
 };
 
 export default PlexusBackground;
