@@ -144,7 +144,7 @@ cython_debug/
 # .idea/
 
 # Node.js dependencies
-node_modules/
+**/node_modules/
 
 # VS Code (Visual Studio Code IDE specific)
 .vscode/
