@@ -1,19 +1,64 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import 'boxicons/css/boxicons.min.css';
 
-const HoverButton = ({ children }) => (
-  <button
-    className="text-gray-700 text-sm p-2 px-3 hover:bg-gray-200 hover:rounded-md focus:outline-none focus:bg-gray-300 transition"
-    aria-label="Navigation button"
-  >
-    {children}
-  </button>
-);
+const HoverButton = ({ children, href, isActive }) => {
+  const handleClick = e => {
+    e.preventDefault();
+    const targetId = href.replace('#', '');
+    const targetElement = document.getElementById(targetId);
+    if (targetElement) {
+      targetElement.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center',
+      });
+    }
+  };
+
+  return (
+    <a
+      href={href}
+      onClick={handleClick}
+      className={`text-sm p-2 px-3 rounded-md transition ${
+        isActive ? 'bg-gray-200' : 'text-gray-700'
+      } hover:bg-gray-200 active:bg-gray-300`}
+      aria-label="Navigation button"
+    >
+      {children}
+    </a>
+  );
+};
 
 const AppBar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
-  const navItems = ['Home', 'About', 'Services', 'Contact', 'GitHub'];
-  const navIcons = ['bx bx-home-alt-2', 'bx bx-info-circle', 'bx bx-cog', 'bx bx-envelope', 'bx bxl-github'];
+  const [activeSection, setActiveSection] = useState(null);
+
+  const navItems = [
+    { name: 'Home', icon: 'bx bx-home-alt-2', href: '#hero' },
+    { name: 'Features', icon: 'bx bx-bell', href: '#features' },
+    { name: 'How It Works', icon: 'bx bx-analyse', href: '#how-it-works' },
+    { name: 'Testimonials', icon: 'bx bx-comment', href: '#testimonials' },
+    { name: 'Contact', icon: 'bx bx-envelope', href: '#contact' },
+  ];
+
+  useEffect(() => {
+    const sectionIds = navItems.map(item => item.href.replace('#', ''));
+    const sections = sectionIds.map(id => document.getElementById(id));
+
+    const observer = new IntersectionObserver(
+      entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            setActiveSection(entry.target.id);
+          }
+        });
+      },
+      { threshold: 1 } // Trigger when 50% of the section is visible
+    );
+
+    sections.forEach(section => section && observer.observe(section));
+
+    return () => observer.disconnect();
+  }, [navItems]);
 
   return (
     <header
@@ -31,9 +76,13 @@ const AppBar = () => {
         {/* Desktop Navigation */}
         <nav className="hidden lg:flex justify-center items-center flex-grow space-x-4" aria-label="Primary navigation">
           {navItems.map((item, index) => (
-            <HoverButton key={`${item}-${index}`}>
-              <i className={`${navIcons[index]} mr-2`}></i>
-              {item}
+            <HoverButton
+              key={`${item.name}-${index}`}
+              href={item.href}
+              isActive={activeSection === item.href.replace('#', '')}
+            >
+              <i className={`${item.icon} mr-2`}></i>
+              {item.name}
             </HoverButton>
           ))}
         </nav>
@@ -64,9 +113,14 @@ const AppBar = () => {
         <div className="lg:hidden absolute top-16 left-0 right-0 bg-white/90 backdrop-blur-lg rounded-b-xl border-t border-gray-200 shadow-lg mx-4">
           <nav className="flex flex-col items-start p-3 space-y-2" aria-label="Mobile navigation menu">
             {navItems.map((item, index) => (
-              <HoverButton key={`${item}-${index}`} onClick={() => setMenuOpen(false)}>
-                <i className={`${navIcons[index]} mr-2`}></i>
-                {item}
+              <HoverButton
+                key={`${item.name}-${index}`}
+                href={item.href}
+                onClick={() => setMenuOpen(false)}
+                isActive={activeSection === item.href.replace('#', '')}
+              >
+                <i className={`${item.icon} mr-2`}></i>
+                {item.name}
               </HoverButton>
             ))}
           </nav>
