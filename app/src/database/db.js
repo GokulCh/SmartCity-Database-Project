@@ -1,5 +1,5 @@
-import mysql from "mysql2/promise";
-import dotenv from "dotenv";
+import mysql from 'mysql2/promise';
+import dotenv from 'dotenv';
 
 dotenv.config();
 
@@ -12,10 +12,10 @@ const connectToDatabase = async () => {
       database: process.env.DB_NAME,
     });
 
-    console.log("Connected to the MySQL database.");
+    console.log('Connected to the MySQL database.');
     return connection;
   } catch (err) {
-    console.error("Error connecting to the database:", err);
+    console.error('Error connecting to the database:', err);
     throw err;
   }
 };
