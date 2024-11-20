@@ -1,6 +1,6 @@
 import React from 'react';
 
-const ContactUs = () => {
+const ContactForm = () => {
   return (
     <section id="contact" className="py-16 bg-gray-100">
       <div className="max-w-6xl mx-auto text-center px-4 sm:px-6 lg:px-8">
@@ -44,4 +44,4 @@ const ContactUs = () => {
   );
 };
 
-export default ContactUs;
+export default ContactForm;

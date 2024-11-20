@@ -1,6 +1,6 @@
 import React from 'react';
 
-const FeaturesOverview = () => {
+const FeaturesSection = () => {
   return (
     <section id="features" className="py-16">
       <div className="max-w-6xl mx-auto text-center px-4 sm:px-6 lg:px-8">
@@ -52,4 +52,4 @@ const Feature = ({ icon, title, description }) => {
   );
 };
 
-export default FeaturesOverview;
+export default FeaturesSection;

@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function SearchSection() {
+export default function TrafficSearchSection() {
   return (
     <div className="flex flex-col h-screen">
       <header className="bg-primary text-primary-foreground py-4 px-6 flex items-center justify-between">

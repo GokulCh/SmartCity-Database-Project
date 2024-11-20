@@ -28,7 +28,7 @@ const HoverButton = ({ children, href, isActive }) => {
   );
 };
 
-const AppBar = () => {
+const NavigationBar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState(null);
 
@@ -79,7 +79,7 @@ const AppBar = () => {
 
   return (
     <header
-      id="AppBar"
+      id="NavigationBar"
       className="fixed top-5 left-0 right-0 flex justify-center items-center w-full z-50"
       style={{ willChange: 'transform' }}
     >
@@ -147,4 +147,4 @@ const AppBar = () => {
   );
 };
 
-export default AppBar;
+export default NavigationBar;

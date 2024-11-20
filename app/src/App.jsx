@@ -1,28 +1,28 @@
-import AppBar from './components/AppBar';
-import Hero from './components/Hero';
-import FeaturesOverview from './components/FeaturesOverview';
-import HowItWorks from './components/HowItWorks';
-import Testimonials from './components/Testimonials';
-import ContactUs from './components/ContactUs';
+import NavigationBar from './components/NavigationBar.jsx';
+import HeroSection from './components/HeroSection.jsx';
+import FeaturesSection from './components/FeaturesSection.jsx';
+import HowItWorksSection from './components/HowItWorksSection.jsx';
+import UserTestimonials from './components/UserTestimonials.jsx';
+import ContactForm from './components/ContactForm.jsx';
 
 const App = props => {
   return (
     <>
-      <AppBar />
+      <NavigationBar />
       <section id="hero">
-        <Hero />
+        <HeroSection />
       </section>
       <section id="features">
-        <FeaturesOverview />
+        <FeaturesSection />
       </section>
       <section id="how-it-works">
-        <HowItWorks />
+        <HowItWorksSection />
       </section>
       <section id="testimonials">
-        <Testimonials />
+        <UserTestimonials />
       </section>
       <section id="contact">
-        <ContactUs />
+        <ContactForm />
       </section>
     </>
   );

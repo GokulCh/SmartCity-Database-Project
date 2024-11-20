@@ -1,6 +1,6 @@
 import React from 'react';
 
-const HowItWorks = () => {
+const HowItWorksSection = () => {
   return (
     <section id="how-it-works" className="py-16">
       <div className="max-w-6xl mx-auto text-center px-4 sm:px-6 lg:px-8">
@@ -42,4 +42,4 @@ const Process = ({ icon, title, description }) => {
   );
 };
 
-export default HowItWorks;
+export default HowItWorksSection;

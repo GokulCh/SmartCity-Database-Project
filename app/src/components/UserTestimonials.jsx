@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Testimonials = () => {
+const UserTestimonials = () => {
   return (
     <section id="testimonials" className="py-16">
       <div className="max-w-6xl mx-auto text-center px-4 sm:px-6 lg:px-8">
@@ -37,4 +37,4 @@ const Testimonial = ({ text, name }) => {
   );
 };
 
-export default Testimonials;
+export default UserTestimonials;

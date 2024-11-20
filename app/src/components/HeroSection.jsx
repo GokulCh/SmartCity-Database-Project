@@ -1,7 +1,7 @@
 import React from 'react';
-import PlexusBackground from './PlexusBackground';
+import AnimatedBackground from './AnimatedBackground';
 
-const Hero = () => {
+const HeroSection = () => {
   return (
     <section
       id="hero"
@@ -10,7 +10,7 @@ const Hero = () => {
         backgroundImage: 'radial-gradient(100% 100% at 50% -20%, rgb(204, 230, 255), transparent)',
       }}
     >
-      <PlexusBackground />
+      <AnimatedBackground />
       <div className="flex flex-col items-center text-center px-4 sm:px-6 lg:px-8 space-y-6">
         {/* Project Introduction */}
         <h1 className="text-4xl sm:text-5xl font-bold text-gray-800 fade-in-medium">Smart City Traffic Hub</h1>
@@ -68,4 +68,4 @@ const Hero = () => {
   );
 };
 
-export default Hero;
+export default HeroSection;
