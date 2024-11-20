@@ -9,32 +9,32 @@ const FeaturesSection = () => {
           <Feature
             icon="bx bx-bell"
             title="Real-Time Alerts"
-            description="Instant notifications about nearby accidents help drivers avoid hazard zones, reducing the risk of secondary incidents."
+            description="Instant notifications about nearby accidents to help drivers avoid potential hazard zones."
           />
           <Feature
             icon="bx bx-shield"
             title="Route Safety"
-            description="By analyzing accident data, our system suggests safer routes and bypasses to ensure a secure commute."
+            description="Suggest alternative routes by cross-referencing current accident and traffic information."
           />
           <Feature
             icon="bx bx-bar-chart-alt-2"
-            title="Data for Planning"
-            description="City planners can access data insights, helping them implement improvements in accident hotspots to increase road safety."
+            title="Planning Support"
+            description="Provide city officials with detailed accident data to identify and address high-risk areas."
           />
           <Feature
             icon="bx bx-trending-up"
             title="Trend Analysis"
-            description="Monitor traffic trends to predict peak hours and areas prone to incidents, aiding in traffic management."
+            description="Monitor and report on traffic patterns to support urban traffic management."
           />
           <Feature
             icon="bx bx-history"
-            title="Historical Data"
-            description="Analyze historical accident data for long-term road safety improvements and more informed city planning."
+            title="Historical Records"
+            description="Maintain comprehensive accident records for long-term safety research and urban planning."
           />
           <Feature
             icon="bx bx-lock-alt"
-            title="Privacy and Security"
-            description="Anonymized data and robust security measures ensure sensitive information remains protected."
+            title="Data Protection"
+            description="Ensure user privacy through anonymized data and strict access controls."
           />
         </div>
       </div>
