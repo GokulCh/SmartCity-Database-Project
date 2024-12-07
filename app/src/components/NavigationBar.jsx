@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import 'boxicons/css/boxicons.min.css';
 
 const HoverButton = ({ children, href, isActive }) => {
@@ -15,16 +16,15 @@ const HoverButton = ({ children, href, isActive }) => {
   };
 
   return (
-    <a
-      href={href}
-      onClick={handleClick}
+    <Link
+      to={href}
       className={`text-sm p-2 px-3 rounded-md transition ${
         isActive ? 'bg-gray-200' : 'text-gray-700'
       } hover:bg-gray-200 active:bg-gray-300`}
       aria-label="Navigation button"
     >
       {children}
-    </a>
+    </Link>
   );
 };
 
@@ -33,11 +33,10 @@ const NavigationBar = () => {
   const [activeSection, setActiveSection] = useState(null);
 
   const navItems = [
-    { name: 'Home', icon: 'bx bx-home-alt-2', href: '#hero' },
-    { name: 'Features', icon: 'bx bx-bell', href: '#features' },
-    { name: 'How It Works', icon: 'bx bx-analyse', href: '#how-it-works' },
-    { name: 'Testimonials', icon: 'bx bx-comment', href: '#testimonials' },
-    { name: 'Contact', icon: 'bx bx-envelope', href: '#contact' },
+    { name: 'Home', icon: 'bx bx-home-alt-2', href: '/' },
+    { name: 'Features', icon: 'bx bx-bell', href: '/features' },
+    { name: 'Contact', icon: 'bx bx-envelope', href: '/contact' },
+    { name: 'Traffic Map', icon: 'bx bx-map', href: '/traffic-map' },
   ];
 
   useEffect(() => {
@@ -55,7 +54,6 @@ const NavigationBar = () => {
           const rect = section.getBoundingClientRect();
           const sectionCenter = rect.top + rect.height / 2;
           const distanceToCenter = Math.abs(sectionCenter - viewportCenter);
-
           if (distanceToCenter < closestDistance) {
             closestDistance = distanceToCenter;
             closestSection = section;

@@ -1,5 +1,8 @@
 import { db } from './db.js';
 
+/* CREATE */
+
+/* READ */
 const getAllAccidents = async () => {
   try {
     const [results] = await db.query('SELECT * FROM Accidents');
@@ -44,5 +47,9 @@ const getAllUserAccidents = async () => {
     throw new Error('Error fetching user accidents: ' + err);
   }
 };
+
+/* UPDATE */
+
+/* DELETE */
 
 export { getAllAccidents, getAllUsers, getAllLocations, getAllEmergencyServices, getAllUserAccidents };
