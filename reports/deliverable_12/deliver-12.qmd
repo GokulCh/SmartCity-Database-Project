@@ -1,8 +1,56 @@
 ---
-title: deliverable 12
+title: Project Deliverable 12 | Final Submission
+date: last-modified
+author:
+    - name: Gokul Chaluvadi
+      email: chaluvadig@vcu.edu
+    - name: Ryan Ta
+      email: tard@vcu.edu
+format:
+    html:
+        embed-resources: true
+        html-math-method: katex
+        theme: minty
+        css: deliver-08.css
+        toc: true
+---
 
-## no scaffold is provided for this QMD.  You need to create it yourself!
+### Links
+- [Final Video (Deliverable 12)](NEED TO PUT LINK IN)
+- [GitHub Repository](https://github.com/cmsc-vcu/cmsc408-fa2024-proj-blue)
+
+EMBEDDED VIDEO
+
+## Description
 
 ---
 
-# hello world!
+## Users
+
+---
+
+## ER Diagram
+
+---
+
+## DB Integrity
+
+---
+
+## Data and the DDL
+
+---
+
+## User Interface Design
+
+### Create
+
+### Retrieve
+
+### Update
+
+### Delete
+
+---
+
+## Reflections
