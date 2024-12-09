@@ -14,8 +14,8 @@
   --danger: #ef4444;
   --background: #05070a;
   --border: #1f2937;
-  --text-primary: #94a0b8;
-  --text-secondary: #4b5563;
+  --text-primary: #9ca3af;
+  --text-secondary: #94a0b8;
   --border-color: #e5e7eb;
 }
 
@@ -26,8 +26,17 @@
 
   body {
     font-family: 'Inter', sans-serif;
-    color: var(--text-primary);
+    color: var(--text-secondary);
     background-color: var(--background);
+    background-image: radial-gradient(100% 100% at 50% -60%, rgb(0, 128, 250, 0.3), transparent);
+  }
+
+  .text-primary {
+    color: var(--text-primary);
+  }
+
+  .text-secondary {
+    color: var(--text-secondary);
   }
 
   h1,
@@ -203,11 +212,11 @@
 
 /* Scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 4px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  background: #668fd145;
 }
 
 ::-webkit-scrollbar-thumb {

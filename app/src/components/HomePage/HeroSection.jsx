@@ -1,5 +1,4 @@
 import React from 'react';
-// import AnimatedBackground from './AnimatedBackground';
 
 const features = [
   {
@@ -21,13 +20,7 @@ const features = [
 
 const HeroSection = () => {
   return (
-    <section
-      id="hero"
-      className="w-full flex flex-col items-center justify-center py-24 sm:py-36 h-screen relative"
-      style={{
-        backgroundImage: 'radial-gradient(100% 100% at 50% -50%, rgb(0, 128, 250, 0.3), transparent)',
-      }}
-    >
+    <section id="Home" className="w-full flex flex-col items-center justify-center py-24 sm:py-36 h-screen relative">
       <div id="HeroSectionContainer" className="flex flex-col items-center justify-center text-center space-y-6">
         <h1 className="text-4xl sm:text-5xl font-bold fade-in-medium">
           <span className="text-blue-500">SmartCity</span> <span className="text-white">Traffic Hub</span>
@@ -40,15 +33,28 @@ const HeroSection = () => {
 
       <div
         id="HeroSectionFeatures"
-        className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 max-w-5xl mx-auto"
+        className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 max-w-5xl mx-auto m-5"
       >
         {features.map(feature => (
           <div key={feature.name} className="flex flex-col items-center text-center float">
             <i className={`${feature.icon} text-2xl`}></i>
-            <span className="text-lg font-semibold text-gray-400">{feature.name}</span>
+            <span className="text-lg font-semibold text-primary">{feature.name}</span>
             <p className="text-sm max-w-xs sm:max-w-md mx-auto break-words">{feature.description}</p>
           </div>
         ))}
+      </div>
+
+      <div id="HeroSectionGetStartedButton" className="mt-10">
+        <button
+          className="btn btn-primary text-white bg-gradient-to-r from-blue-500 to-blue-700 p-2 px-3 rounded-3xl shadow-lg mx-4 
+      transition-all duration-300 hover:from-blue-400 hover:to-blue-600"
+        >
+          Get Started
+        </button>
+      </div>
+
+      <div id="HeroSectionScrollDownArrow" className="absolute bottom-10 text-center">
+        <i className="bx bx-chevron-down text-white text-3xl animate-bounce"></i>
       </div>
     </section>
   );

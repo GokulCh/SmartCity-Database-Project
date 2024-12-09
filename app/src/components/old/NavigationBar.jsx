@@ -125,7 +125,7 @@ const NavigationBar = () => {
 
       {/* Mobile Menu Dropdown */}
       {menuOpen && (
-        <div className="lg:hidden absolute top-16 left-0 right-0 bg-white/90 backdrop-blur-lg rounded-b-xl border-t border-gray-200 shadow-lg mx-4">
+        <div className="lg:hidden absolute top-16 left-0 right-0 bg-white/90 backdrop-blur-lg rounded-b-xl border-gray-200 shadow-lg mx-4">
           <nav className="flex flex-col items-start p-3 space-y-2" aria-label="Mobile navigation menu">
             {navItems.map((item, index) => (
               <HoverButton

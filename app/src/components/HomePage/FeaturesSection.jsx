@@ -2,9 +2,9 @@ import React from 'react';
 
 const FeaturesSection = () => {
   return (
-    <section id="features" className="py-16">
+    <section id="Features" className="py-16">
       <div className="max-w-6xl mx-auto text-center px-4 sm:px-6 lg:px-8">
-        <h2 className="text-3xl font-bold text-gray-800">Platform Features</h2>
+        <h2 className="text-3xl font-bold text-primary">Platform Features</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 mt-8">
           <Feature
             icon="bx bx-bell"
@@ -45,9 +45,9 @@ const FeaturesSection = () => {
 const Feature = ({ icon, title, description }) => {
   return (
     <div className="flex flex-col items-center">
-      <i className={`${icon} text-3xl text-primary mb-2`}></i>
-      <span className="text-lg font-semibold text-gray-700">{title}</span>
-      <p className="text-sm text-gray-600 text-center">{description}</p>
+      <i className={`${icon} text-2xl`}></i>
+      <h3 className="text-lg font-semibold text-primary">{title}</h3>
+      <p className="text-sm">{description}</p>
     </div>
   );
 };
