@@ -13,6 +13,7 @@
   --warning: #f59e0b;
   --danger: #ef4444;
   --background: #05070a;
+  --background-secondary: #111827;
   --border: #1f2937;
   --text-primary: #9ca3af;
   --text-secondary: #94a0b8;
@@ -37,6 +38,10 @@
 
   .text-secondary {
     color: var(--text-secondary);
+  }
+
+  .bg-secondary {
+    background-color: var(--background-secondary);
   }
 
   h1,

@@ -3,11 +3,13 @@ import 'boxicons/css/boxicons.min.css';
 import { HashLink } from 'react-router-hash-link';
 
 const navItems = [
-  { name: 'Home', icon: 'bx bx-home-alt-2', href: '/' },
+  { name: 'Home', icon: 'bx bx-home-alt-2', href: '/#Home' },
   { name: 'Features', icon: 'bx bx-bell', href: '/#Features' },
   { name: 'How It Works', icon: 'bx bx-info-circle', href: '/#HowItWorks' },
   { name: 'Queries', icon: 'bx bx-package', href: '/Queries' },
   { name: 'Traffic Map', icon: 'bx bx-map', href: '/TrafficMap' },
+  { name: 'Future Works', icon: 'bx bx-rocket', href: '/#Future' },
+  { name: 'Motivation', icon: 'bx bx-heart', href: '/#Motivation' },
   { name: 'GitHub', icon: 'bx bxl-github', href: 'https://github.com/cmsc-vcu/cmsc408-fa2024-proj-blue' },
 ];
 
@@ -25,30 +27,18 @@ const NavigationBar = () => {
 
         <div id="NavigationBarContainerRight" className="flex items-center justify-end space-x-4 w-full">
           <nav className="flex space-x-4">
-            {navItems.map((item, index) =>
-              item.href.startsWith('#') || item.href.startsWith('/#') ? (
-                <HashLink
-                  key={index}
-                  to={item.href}
-                  className="flex items-center rounded-md px-3 py-2 space-x-2 text-white hover:bg-gray-700 font-sans text-[14px]"
-                  style={{ fontFamily: 'Inter, sans-serif' }}
-                  smooth
-                >
-                  <i className={item.icon}></i>
-                  <span>{item.name}</span>
-                </HashLink>
-              ) : (
-                <a
-                  key={index}
-                  href={item.href}
-                  className="flex items-center rounded-md px-3 py-2 space-x-2 text-white hover:bg-gray-700 font-sans text-[14px]"
-                  style={{ fontFamily: 'Inter, sans-serif' }}
-                >
-                  <i className={item.icon}></i>
-                  <span>{item.name}</span>
-                </a>
-              )
-            )}
+            {navItems.map((item, index) => (
+              <HashLink
+                key={index}
+                to={item.href}
+                className="flex items-center rounded-md px-2 py-2 space-x-1 text-white hover:bg-gray-700 font-sans text-[14px]"
+                style={{ fontFamily: 'Inter, sans-serif' }}
+                smooth
+              >
+                <i className={item.icon}></i>
+                <span>{item.name}</span>
+              </HashLink>
+            ))}
           </nav>
         </div>
       </section>
