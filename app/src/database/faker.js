@@ -17,8 +17,8 @@ class DatabaseSeeder {
   async createTables() {
     // Drop existing tables in correct order to respect foreign key constraints
     const dropTables = [
-      'DROP TABLE IF EXISTS User_Accidents',
-      'DROP TABLE IF EXISTS Emergency_Services',
+      'DROP TABLE IF EXISTS UserAccidents',
+      'DROP TABLE IF EXISTS EmergencyServices',
       'DROP TABLE IF EXISTS Accidents',
       'DROP TABLE IF EXISTS Users',
       'DROP TABLE IF EXISTS Locations',
@@ -50,7 +50,7 @@ class DatabaseSeeder {
         FOREIGN KEY (location_id) REFERENCES Locations(location_id)
       )`,
 
-      `CREATE TABLE Emergency_Services (
+      `CREATE TABLE EmergencyServices (
         service_id INT AUTO_INCREMENT PRIMARY KEY,
         service_type ENUM('ambulance', 'police', 'fire_truck') NOT NULL,
         response_time INT NOT NULL,
@@ -58,7 +58,7 @@ class DatabaseSeeder {
         FOREIGN KEY (accident_id) REFERENCES Accidents(accident_id)
       )`,
 
-      `CREATE TABLE User_Accidents (
+      `CREATE TABLE UserAccidents (
         user_id INT,
         accident_id INT,
         involvement_type ENUM('witness', 'driver', 'reporter') NOT NULL,
@@ -116,18 +116,65 @@ class DatabaseSeeder {
     return users;
   }
 
+  generateRealisticAccidentDescription() {
+    const accidentTypes = [
+      'rear-end collision',
+      'side-swipe accident',
+      'head-on collision',
+      'intersection collision',
+      'single-vehicle accident',
+      'multi-vehicle pileup',
+      'pedestrian involved accident',
+    ];
+
+    const causeFactors = [
+      'driver distracted by mobile phone',
+      'driver failed to yield right of way',
+      'driver ran a red light',
+      'slippery road conditions',
+      'sudden lane change',
+      'driver under the influence',
+      'vehicle mechanical failure',
+      'poor visibility due to weather',
+      'driver fatigue',
+    ];
+
+    const severityDescriptors = {
+      minor: ['minor damage to vehicles', 'no serious injuries reported', 'vehicles able to drive away'],
+      moderate: ['significant vehicle damage', 'some injuries requiring medical attention', 'traffic disruption'],
+      severe: [
+        'extensive vehicle damage',
+        'multiple serious injuries',
+        'emergency services required',
+        'potential road closure',
+      ],
+    };
+
+    return severity => {
+      const type = getRandomElement(accidentTypes);
+      const cause = getRandomElement(causeFactors);
+      const severityDetails = getRandomElement(severityDescriptors[severity]);
+
+      return `${type.charAt(0).toUpperCase() + type.slice(1)} occurred due to ${cause}. ${severityDetails}.`;
+    };
+  }
+
   // Generate random accidents
   generateAccidents(locationIds, count = 300) {
     const severities = ['minor', 'moderate', 'severe'];
+    const accidentDescriptionGenerator = generateRealisticAccidentDescription();
     const accidents = [];
+
     for (let i = 0; i < count; i++) {
+      const severity = getRandomElement(severities);
       accidents.push({
         date_time: faker.date.recent({ days: 365 }),
-        severity: getRandomElement(severities),
-        description: faker.lorem.sentence(),
+        severity: severity,
+        description: accidentDescriptionGenerator(severity),
         location_id: getRandomElement(locationIds),
       });
     }
+
     return accidents;
   }
 
@@ -151,14 +198,15 @@ class DatabaseSeeder {
     const userAccidents = new Set(); // Ensure unique combinations
 
     while (userAccidents.size < count) {
-      userAccidents.add({
+      const userAccident = {
         user_id: getRandomElement(userIds),
         accident_id: getRandomElement(accidentIds),
         involvement_type: getRandomElement(involvementTypes),
-      });
+      };
+      userAccidents.add(JSON.stringify(userAccident)); // Add as a string to ensure uniqueness
     }
 
-    return Array.from(userAccidents);
+    return Array.from(userAccidents).map(JSON.parse); // Convert back to objects
   }
 
   // Insert data into database
@@ -196,13 +244,13 @@ class DatabaseSeeder {
 
       // Insert Emergency Services
       const emergencyServices = this.generateEmergencyServices(accidentIds);
-      await this.db.query('INSERT INTO Emergency_Services (service_type, response_time, accident_id) VALUES ?', [
+      await this.db.query('INSERT INTO EmergencyServices (service_type, response_time, accident_id) VALUES ?', [
         emergencyServices.map(s => [s.service_type, s.response_time, s.accident_id]),
       ]);
 
       // Insert User Accidents
       const userAccidents = this.generateUserAccidents(userIds, accidentIds);
-      await this.db.query('INSERT INTO User_Accidents (user_id, accident_id, involvement_type) VALUES ?', [
+      await this.db.query('INSERT INTO UserAccidents (user_id, accident_id, involvement_type) VALUES ?', [
         userAccidents.map(ua => [ua.user_id, ua.accident_id, ua.involvement_type]),
       ]);
 
@@ -225,6 +273,49 @@ class DatabaseSeeder {
       throw error;
     }
   }
+}
+
+function generateRealisticAccidentDescription() {
+  const accidentTypes = [
+    'rear-end collision',
+    'side-swipe accident',
+    'head-on collision',
+    'intersection collision',
+    'single-vehicle accident',
+    'multi-vehicle pileup',
+    'pedestrian involved accident',
+  ];
+
+  const causeFactors = [
+    'driver distracted by mobile phone',
+    'driver failed to yield right of way',
+    'driver ran a red light',
+    'slippery road conditions',
+    'sudden lane change',
+    'driver under the influence',
+    'vehicle mechanical failure',
+    'poor visibility due to weather',
+    'driver fatigue',
+  ];
+
+  const severityDescriptors = {
+    minor: ['minor damage to vehicles', 'no serious injuries reported', 'vehicles able to drive away'],
+    moderate: ['significant vehicle damage', 'some injuries requiring medical attention', 'traffic disruption'],
+    severe: [
+      'extensive vehicle damage',
+      'multiple serious injuries',
+      'emergency services required',
+      'potential road closure',
+    ],
+  };
+
+  return severity => {
+    const type = getRandomElement(accidentTypes);
+    const cause = getRandomElement(causeFactors);
+    const severityDetails = getRandomElement(severityDescriptors[severity]);
+
+    return `${type.charAt(0).toUpperCase() + type.slice(1)} occurred due to ${cause}. ${severityDetails}.`;
+  };
 }
 
 // Database connection function

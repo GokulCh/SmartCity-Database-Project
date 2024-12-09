@@ -12,8 +12,9 @@
   --success: #22c55e;
   --warning: #f59e0b;
   --danger: #ef4444;
-  --background: #ffffff;
-  --text-primary: #1f2937;
+  --background: #05070a;
+  --border: #1f2937;
+  --text-primary: #94a0b8;
   --text-secondary: #4b5563;
   --border-color: #e5e7eb;
 }
@@ -153,7 +154,7 @@
   }
 
   50% {
-    transform: translateY(-10px);
+    transform: translateY(10px);
   }
 
   100% {

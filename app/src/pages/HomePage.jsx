@@ -1,18 +1,18 @@
 import React from 'react';
-import HeroSection from '../components/HeroSection.jsx';
-import FeaturesSection from '../components/FeaturesSection.jsx';
-import HowItWorksSection from '../components/HowItWorksSection.jsx';
-import UserTestimonials from '../components/UserTestimonials.jsx';
-import ContactForm from '../components/ContactForm.jsx';
+import HeroSection from '../components/HomePage/HeroSection.jsx';
 
 const HomePage = () => {
   return (
     <>
       <HeroSection />
-      <FeaturesSection />
-      <HowItWorksSection />
-      <UserTestimonials />
-      <ContactForm />
+      <HeroSection />
+      <HeroSection />
+      <HeroSection />
+      <HeroSection />
+      <HeroSection />
+      <HeroSection />
+      <HeroSection />
+      <HeroSection />
     </>
   );
 };
