@@ -1,5 +1,7 @@
 import express from 'express';
 import cors from 'cors';
+
+// Importing query files
 import * as distinctQueries from './queries/distinctQueries.js';
 import { Locations } from './queries/locationsDb.js';
 import { Users } from './queries/usersDb.js';
@@ -7,10 +9,12 @@ import { Accidents } from './queries/accidentDb.js';
 import { EmergencyServices } from './queries/emergencyServicesDb.js';
 import { UserAccidents } from './queries/userAccidentsDb.js';
 
+// Initialize app and port
 const app = express();
 const port = 3001;
 
-app.use(cors()); // Add this line to enable CORS
+// Middleware setup
+app.use(cors()); // Enable CORS
 app.use(express.json());
 
 // Haversine formula to calculate the distance between two points on the Earth
@@ -32,54 +36,31 @@ app.get('/api/query', (req, res) => {
   console.log(queryNames);
 });
 
-// Route to fetch all locations
+// New route to get closest locations based on coordinates (lat, lng)
 app.get('/api/locations', async (req, res) => {
+  const { lat, lng } = req.query;
+
   try {
-    const locations = getAllLocations();
-    res.json(locations);
+    const locations = await new Locations().getAllLocations();
+
+    // If lat and lng are provided, calculate the distance and sort the locations
+    if (lat && lng) {
+      const sortedLocations = locations
+        .map(location => ({
+          ...location,
+          distance: calculateDistance(lat, lng, location.lat, location.lng),
+        }))
+        .sort((a, b) => a.distance - b.distance)
+        .slice(0, 10); // Take the closest 10 locations
+
+      res.json(sortedLocations);
+    } else {
+      // If lat and lng are not provided, return all locations
+      res.json(locations);
+    }
   } catch (err) {
     console.error('Error fetching locations:', err);
     res.status(500).send('Error fetching locations');
-  }
-});
-
-// Route to create a new location
-app.post('/api/create-location', async (req, res) => {
-  const { street, intersection, latitude, longitude } = req.body;
-
-  if (!street || !intersection || !latitude || !longitude) {
-    return res.status(400).send('All fields are required');
-  }
-
-  try {
-    createLocation(street, intersection, latitude, longitude);
-    res.status(201).send('Location created');
-  } catch (err) {
-    console.error('Error creating location:', err);
-    res.status(500).send('Error creating location');
-  }
-});
-
-// Route to update a location by ID
-app.put('/api/update-location/:id', async (req, res) => {
-  const { id } = req.params;
-  const { street, intersection, latitude, longitude } = req.body;
-
-  if (!street || !intersection || !latitude || !longitude) {
-    return res.status(400).send('All fields are required');
-  }
-
-  try {
-    const location = getLocationById(id);
-    if (!location) {
-      return res.status(404).send('Location not found');
-    }
-
-    updateLocation(id, street, intersection, latitude, longitude);
-    res.status(200).send('Location updated');
-  } catch (err) {
-    console.error('Error updating location:', err);
-    res.status(500).send('Error updating location');
   }
 });
 
@@ -87,7 +68,7 @@ app.put('/api/update-location/:id', async (req, res) => {
 app.get('/api/locations/:id', async (req, res) => {
   const { id } = req.params;
   try {
-    const location = getLocationById(id);
+    const location = await new Locations().getLocationById(id);
     if (!location) {
       return res.status(404).send('Location not found');
     }
@@ -98,46 +79,33 @@ app.get('/api/locations/:id', async (req, res) => {
   }
 });
 
-// Other routes to fetch data for users, accidents, emergency services, etc.
-app.get('/api/users', async (req, res) => {
-  try {
-    const users = await new Users().getAllUsers();
-    res.json(users);
-  } catch (err) {
-    console.error('Error fetching users:', err);
-    res.status(500).send('Error fetching users');
-  }
-});
+// API routes for fetching data
+const fetchData = (model, errorMessage, res) => {
+  model()
+    .then(data => res.json(data))
+    .catch(err => {
+      console.error(errorMessage, err);
+      res.status(500).send(errorMessage);
+    });
+};
 
-app.get('/api/accidents', async (req, res) => {
-  try {
-    const accidents = await new Accidents().getAllAccidents();
-    res.json(accidents);
-  } catch (err) {
-    console.error('Error fetching accidents:', err);
-    res.status(500).send('Error fetching accidents');
-  }
-});
+// Route for users
+app.get('/api/users', (req, res) => fetchData(Users.prototype.getAllUsers, 'Error fetching users', res));
 
-app.get('/api/emergency-services', async (req, res) => {
-  try {
-    const emergencyServices = await new EmergencyServices().getAllEmergencyServices();
-    res.json(emergencyServices);
-  } catch (err) {
-    console.error('Error fetching emergency services:', err);
-    res.status(500).send('Error fetching emergency services');
-  }
-});
+// Route for accidents
+app.get('/api/accidents', (req, res) =>
+  fetchData(Accidents.prototype.getAllAccidents, 'Error fetching accidents', res)
+);
 
-app.get('/api/user-accidents', async (req, res) => {
-  try {
-    const userAccidents = await new UserAccidents().getAllUserAccidents();
-    res.json(userAccidents);
-  } catch (err) {
-    console.error('Error fetching user accidents:', err);
-    res.status(500).send('Error fetching user accidents');
-  }
-});
+// Route for emergency services
+app.get('/api/emergency-services', (req, res) =>
+  fetchData(EmergencyServices.prototype.getAllEmergencyServices, 'Error fetching emergency services', res)
+);
+
+// Route for user accidents
+app.get('/api/user-accidents', (req, res) =>
+  fetchData(UserAccidents.prototype.getAllUserAccidents, 'Error fetching user accidents', res)
+);
 
 // Start the server
 app.listen(port, () => {
