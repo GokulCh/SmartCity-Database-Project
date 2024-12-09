@@ -1,122 +1,77 @@
-# my-ddl.sql
-
-SET FOREIGN_KEY_CHECKS=0;
-DROP TABLE IF EXISTS locations;
-DROP TABLE IF EXISTS accidents;
-DROP TABLE IF EXISTS users;
-DROP TABLE IF EXISTS ermergencyservices;
-DROP TABLE IF EXISTS useraccidents;
-SET FOREIGN_KEY_CHECKS=1;
-
-CREATE TABLE locations (
-    id                  int NOT NULL,
-    street              varchar(255) NOT NULL,
-    intersection        varchar(255) NOT NULL,
-    latitude            FLOAT NOT NULL,
-    longitude           FLOAT NOT NULL,
-    PRIMARY KEY (id)
+SCHEMA accident_reporting;
+TABLE Locations { location_id INT AUTO_INCREMENT PRIMARY KEY;
+street VARCHAR(255) NOT NULL;
+intersection VARCHAR(255);
+latitude DECIMAL(8, 6) CHECK (
+    latitude BETWEEN -90 AND 90
 );
-
-INSERT INTO locations (id, street, intersection, latitude, longitude) VALUES
-(1, 'Main St', 'Main St & 1st Ave', 40.712776, -74.005974),
-(2, 'Elm St', 'Elm St & 2nd Ave', 34.052235, -118.243683),
-(3, 'Broadway', 'Broadway & 3rd St', 41.878113, -87.629799),
-(4, 'Pine St', 'Pine St & 4th Ave', 29.760427, -95.369804),
-(5, 'Cedar St', 'Cedar St & 5th Ave', 39.739236, -104.990251),
-(6, 'Oak St', 'Oak St & 6th Ave', 25.761680, -80.191790),
-(7, 'Maple St', 'Maple St & 7th Ave', 37.774929, -122.419416),
-(8, 'Ash St', 'Ash St & 8th Ave', 32.715736, -117.161087),
-(9, 'Willow St', 'Willow St & 9th Ave', 36.169941, -115.139832),
-(10, 'Birch St', 'Birch St & 10th Ave', 33.448376, -112.074036);
-
-CREATE TABLE accidents (
-    id                  INT NOT NULL,
-    date_time           DATETIME NOT NULL,
-    severity            VARCHAR(255) NOT NULL,
-    description         VARCHAR(255) NOT NULL,
-    PRIMARY KEY (id),
-    FOREIGN KEY (location_id) REFERENCES locations (id)
-        ON delete cascade
-        ON update cascade
+longitude DECIMAL(9, 6) CHECK (
+    longitude BETWEEN -180 AND 180
 );
-
-INSERT INTO accidents (id, date_time, severity, description) VALUES
-(1, '2024-12-01 14:30:00', 'Moderate', 'Rear-end collision at Main St'),
-(2, '2024-12-02 08:15:00', 'Severe', 'Head-on collision at Elm St'),
-(3, '2024-12-03 18:45:00', 'Minor', 'Bicycle accident at Broadway'),
-(4, '2024-12-04 21:10:00', 'Moderate', 'Hit-and-run at Pine St'),
-(5, '2024-12-05 07:50:00', 'Severe', 'Multiple car pile-up at Cedar St'),
-(6, '2024-12-06 12:30:00', 'Minor', 'Pedestrian incident at Oak St'),
-(7, '2024-12-07 16:20:00', 'Moderate', 'Truck collision at Maple St'),
-(8, '2024-12-08 22:15:00', 'Severe', 'Motorcycle accident at Ash St'),
-(9, '2024-12-09 09:40:00', 'Minor', 'Parking lot scrape at Willow St'),
-(10, '2024-12-10 13:35:00', 'Severe', 'Bus accident at Birch St');
-
-
-CREATE TABLE users (
-    id                  INT NOT NULL,
-    name                VARCHAR(255) NOT NULL,
-    user_role           VARCHAR(255) NOT NULL,
-    contact_info        VARCHAR(255) NOT NULL,
-    PRIMARY KEY (id)
+} TABLE Users { user_id INT AUTO_INCREMENT PRIMARY KEY;
+name VARCHAR(255) NOT NULL;
+user_role ENUM('driver', 'city_official', 'responder') NOT NULL;
+contact_info VARCHAR(255) NOT NULL;
+} TABLE Accidents { accident_id INT AUTO_INCREMENT PRIMARY KEY;
+date_time DATETIME NOT NULL;
+severity ENUM('minor', 'moderate', 'severe') NOT NULL;
+description TEXT;
+location_id INT REFERENCES Locations(location_id);
+} TABLE EmergencyServices { service_id INT AUTO_INCREMENT PRIMARY KEY;
+service_type ENUM('ambulance', 'police', 'fire_truck') NOT NULL;
+response_time INT NOT NULL;
+accident_id INT REFERENCES Accidents(accident_id);
+} TABLE UserAccidents { user_id INT REFERENCES Users(user_id);
+accident_id INT REFERENCES Accidents(accident_id);
+involvement_type ENUM('witness', 'driver', 'reporter') NOT NULL;
+PRIMARY KEY (user_id, accident_id);
+} SEED Locations { COUNT 100;
+street = RANDOM.STREET();
+intersection = RANDOM.STREET_ADDRESS();
+latitude = RANDOM.LATITUDE();
+longitude = RANDOM.LONGITUDE();
+} SEED Users { COUNT 200;
+name = RANDOM.FULL_NAME();
+user_role = RANDOM.PICK('driver', 'city_official', 'responder');
+contact_info = RANDOM.PHONE_NUMBER();
+} SEED Accidents { COUNT 300;
+date_time = RANDOM.RECENT_DATE(365);
+severity = RANDOM.PICK('minor', 'moderate', 'severe');
+description = CUSTOM.DESCRIPTION(severity);
+location_id = RANDOM.FOREIGN_KEY(Locations.location_id);
+} SEED EmergencyServices { COUNT 200;
+service_type = RANDOM.PICK('ambulance', 'police', 'fire_truck');
+response_time = RANDOM.INT(5, 120);
+accident_id = RANDOM.FOREIGN_KEY(Accidents.accident_id);
+} SEED UserAccidents { COUNT 400;
+user_id = RANDOM.FOREIGN_KEY(Users.user_id);
+accident_id = RANDOM.FOREIGN_KEY(Accidents.accident_id);
+involvement_type = RANDOM.PICK('witness', 'driver', 'reporter');
+} CUSTOM FUNCTION DESCRIPTION(severity) { accidentTypes = [
+        "rear-end collision", "side-swipe accident", "head-on collision", 
+        "intersection collision", "single-vehicle accident", 
+        "multi-vehicle pileup", "pedestrian involved accident"
+    ];
+causeFactors = [
+        "driver distracted by mobile phone", "driver failed to yield right of way", 
+        "driver ran a red light", "slippery road conditions", 
+        "sudden lane change", "driver under the influence", 
+        "vehicle mechanical failure", "poor visibility due to weather", 
+        "driver fatigue"
+    ];
+severityDescriptors = { minor: ["minor damage to vehicles", "no serious injuries reported", "vehicles able to drive away"],
+moderate: ["significant vehicle damage", "some injuries requiring medical attention", "traffic disruption"],
+severe: ["extensive vehicle damage", "multiple serious injuries", "emergency services required", "potential road closure"] };
+type = RANDOM.PICK(accidentTypes);
+cause = RANDOM.PICK(causeFactors);
+details = RANDOM.PICK(severityDescriptors [severity]);
+RETURN CONCAT(
+    UPPER(SUBSTRING(type, 1, 1)),
+    LOWER(SUBSTRING(type, 2)),
+    " occurred due to ",
+    cause,
+    ". ",
+    details,
+    "."
 );
-
-INSERT INTO users (id, name, user_role, contact_info) VALUES
-(1, 'John Doe', 'Driver', 'john.doe@example.com'),
-(2, 'Jane Smith', 'City Official', 'jane.smith@example.com'),
-(3, 'Mike Brown', 'Responder', 'mike.brown@example.com'),
-(4, 'Sarah Lee', 'Driver', 'sarah.lee@example.com'),
-(5, 'Anna White', 'Responder', 'anna.white@example.com'),
-(6, 'Paul Green', 'City Official', 'paul.green@example.com'),
-(7, 'Emma Black', 'Driver', 'emma.black@example.com'),
-(8, 'James King', 'Responder', 'james.king@example.com'),
-(9, 'Sophia Miller', 'City Official', 'sophia.miller@example.com'),
-(10, 'Daniel Wilson', 'Driver', 'daniel.wilson@example.com');
-
-
-CREATE TABLE ermergencyservices (
-    id                  INT NOT NULL,
-    service_type        VARCHAR(255) NOT NULL,
-    response_time       INT NOT NULL,
-    PRIMARY KEY (id)
-    FOREIGN KEY (accident_id) REFERENCES accidents (id)
-        ON delete cascade
-        ON update cascade
-);
-
-INSERT INTO emergencyservices (id, service_type, response_time) VALUES
-(1, 'Ambulance', 12),
-(2, 'Police', 10),
-(3, 'Fire Truck', 15),
-(4, 'Ambulance', 8),
-(5, 'Police', 20),
-(6, 'Fire Truck', 18),
-(7, 'Ambulance', 10),
-(8, 'Police', 25),
-(9, 'Fire Truck', 14),
-(10, 'Ambulance', 9);
-
-
-CREATE TABLE useraccidents (
-    useraccidents_id   int NOT NULL,
-    involvement_type    VARCHAR(255) NOT NULL,
-    PRIMARY KEY (useraccidents_id),
-    FOREIGN KEY (accident_id) REFERENCES accidents (id)
-        ON delete cascade
-        ON update cascade
-    ,FOREIGN KEY (user_id) REFERENCES users (id)
-        ON delete cascade
-        ON update cascade
-);
-
-INSERT INTO user_accidents (user_accidents_id, involvement_type) VALUES
-(1, 'Driver'),
-(2, 'Witness'),
-(3, 'Driver'),
-(4, 'Reporter'),
-(5, 'Witness'),
-(6, 'Driver'),
-(7, 'Reporter'),
-(8, 'Driver'),
-(9, 'Witness'),
-(10, 'Reporter');
+}
