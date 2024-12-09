@@ -389,31 +389,31 @@ async function getUserFatigueAnalysis() {
 async function getAccidentReportingEfficiency() {
   const [results] = await db.query(`
       SELECT 
-        u.user_role,
-        COUNT(DISTINCT ua.accident_id) as total_reported_accidents,
-        ROUND(
-          AVG(
+    u.user_role,
+    COUNT(DISTINCT ua.accident_id) AS total_reported_accidents,
+    ROUND(
+        AVG(
             TIMESTAMPDIFF(
-              MINUTE, 
-              a.date_time, 
-              (SELECT MIN(es.date_time) FROM EmergencyServices es WHERE es.accident_id = a.accident_id)
+                MINUTE, 
+                a.date_time, 
+                (SELECT MIN(es.response_time) FROM EmergencyServices es WHERE es.accident_id = a.accident_id)
             )
-          ),
-          2
-        ) as avg_reporting_delay,
-        ROUND(
-          COUNT(DISTINCT 
+        ),
+        2
+    ) AS avg_reporting_delay,
+    ROUND(
+        COUNT(DISTINCT 
             CASE WHEN es.service_type IS NOT NULL 
             THEN ua.accident_id END
-          ) / COUNT(DISTINCT ua.accident_id) * 100,
-          2
-        ) as emergency_response_rate
-      FROM Users u
-      JOIN UserAccidents ua ON u.user_id = ua.user_id
-      JOIN Accidents a ON ua.accident_id = a.accident_id
-      LEFT JOIN EmergencyServices es ON a.accident_id = es.accident_id
-      GROUP BY u.user_role
-      ORDER BY total_reported_accidents DESC
+        ) / COUNT(DISTINCT ua.accident_id) * 100,
+        2
+    ) AS emergency_response_rate
+FROM Users u
+JOIN UserAccidents ua ON u.user_id = ua.user_id
+JOIN Accidents a ON ua.accident_id = a.accident_id
+LEFT JOIN EmergencyServices es ON a.accident_id = es.accident_id
+GROUP BY u.user_role
+ORDER BY total_reported_accidents DESC;
     `);
   return results;
 }
