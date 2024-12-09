@@ -588,8 +588,6 @@ const QueryRow = ({ title, description, code, results, isExpanded }) => {
     setIsRowExpanded(isExpanded);
   }, [isExpanded]);
 
-  const hasResults = Array.isArray(results) && results.length > 0;
-
   return (
     <div className="bg-secondary shadow-lg rounded-lg">
       <div className="flex justify-between items-center px-6 py-4 border-b border-gray-800">
@@ -613,37 +611,9 @@ const QueryRow = ({ title, description, code, results, isExpanded }) => {
           </div>
           <div>
             <h4 className="text-md font-medium mb-2">Results:</h4>
-            <div className="overflow-x-auto bg-gray-900 rounded-lg p-4 max-h-64">
-              {hasResults ? (
-                <table className="table-auto w-full text-sm text-left text-gray-400">
-                  <thead className="text-xs text-gray-300 uppercase bg-gray-800">
-                    <tr>
-                      {/* Dynamically generate table headers */}
-                      {Object.keys(results[0]).map(key => (
-                        <th key={key} className="px-4 py-2">
-                          {key}
-                        </th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {results.map((row, index) => (
-                      <tr key={index} className={`border-b border-gray-700 ${index % 2 === 0 ? 'bg-gray-800' : ''}`}>
-                        {Object.values(row).map((value, i) => (
-                          <td key={i} className="px-4 py-2">
-                            {value}
-                          </td>
-                        ))}
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              ) : (
-                <div className="text-center text-gray-400 py-4">
-                  <p>No Results Found</p>
-                </div>
-              )}
-            </div>
+            <pre className="bg-primary p-4 rounded-lg text-sm overflow-x-auto">
+              <code>{results}</code>
+            </pre>
           </div>
         </div>
       )}
