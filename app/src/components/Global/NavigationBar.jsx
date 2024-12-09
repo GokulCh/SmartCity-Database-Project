@@ -10,6 +10,7 @@ const navItems = [
   { name: 'Traffic Map', icon: 'bx bx-map', href: '/TrafficMap/#Home' },
   { name: 'Future Works', icon: 'bx bx-rocket', href: '/#Future' },
   { name: 'Motivation', icon: 'bx bx-heart', href: '/#Motivation' },
+  { name: 'Manager', icon: 'bx bx-cog', href: '/Manager/#Home' },
   { name: 'GitHub', icon: 'bx bxl-github', href: 'https://github.com/cmsc-vcu/cmsc408-fa2024-proj-blue' },
 ];
 
