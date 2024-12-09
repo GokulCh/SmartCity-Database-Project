@@ -1,8 +1,11 @@
-import { db } from '../db.js';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 
-// 1. Identify the most dangerous locations with the highest number of severe accidents
-async function getMostDangerousLocations() {
-  const [results] = await db.query(`
+const QueriesSection = () => {
+  const queries = [
+    {
+      title: 'Most Dangerous Locations',
+      code: `
       SELECT 
         l.street, 
         l.intersection, 
@@ -15,13 +18,14 @@ async function getMostDangerousLocations() {
       GROUP BY l.street, l.intersection
       ORDER BY severe_accident_count DESC
       LIMIT 5
-    `);
-  return results;
-}
-
-// 2. Calculate emergency service efficiency by different service types
-async function getEmergencyServiceEfficiency() {
-  const [results] = await db.query(`
+      `,
+      description: 'Identify the most dangerous locations with the highest number of severe accidents.',
+      apiEndpoint: 'getMostDangerousLocations',
+      results: 'Loading...',
+    },
+    {
+      title: 'Emergency Service Efficiency',
+      code: `
       SELECT 
         service_type, 
         COUNT(*) as total_responses,
@@ -31,13 +35,14 @@ async function getEmergencyServiceEfficiency() {
       FROM EmergencyServices
       GROUP BY service_type
       ORDER BY avg_response_time
-    `);
-  return results;
-}
-
-// 3. Analyze user involvement patterns across different accident severities
-async function getUserInvolvementBySeverity() {
-  const [results] = await db.query(`
+      `,
+      description: 'Calculate emergency service efficiency by different service types.',
+      apiEndpoint: 'getEmergencyServiceEfficiency',
+      results: 'Loading...',
+    },
+    {
+      title: 'User Involvement by Severity',
+      code: `
       SELECT 
         ua.involvement_type,
         a.severity,
@@ -47,13 +52,14 @@ async function getUserInvolvementBySeverity() {
       JOIN Accidents a ON ua.accident_id = a.accident_id
       GROUP BY ua.involvement_type, a.severity
       ORDER BY involvement_count DESC
-    `);
-  return results;
-}
-
-// 4. Identify seasonal accident trends
-async function getSeasonalAccidentTrends() {
-  const [results] = await db.query(`
+      `,
+      description: 'Analyze user involvement patterns across different accident severities.',
+      apiEndpoint: 'getUserInvolvementBySeverity',
+      results: 'Loading...',
+    },
+    {
+      title: 'Seasonal Accident Trends',
+      code: `
       SELECT 
         CASE 
           WHEN MONTH(date_time) IN (12, 1, 2) THEN 'Winter'
@@ -66,13 +72,14 @@ async function getSeasonalAccidentTrends() {
       FROM Accidents
       GROUP BY season
       ORDER BY total_accidents DESC
-    `);
-  return results;
-}
-
-// 5. Analyze time distribution of accidents
-async function getAccidentTimeDistribution() {
-  const [results] = await db.query(`
+      `,
+      description: 'Identify seasonal accident trends and analyze severity percentages by season.',
+      apiEndpoint: 'getSeasonalAccidentTrends',
+      results: 'Loading...',
+    },
+    {
+      title: 'Accident Time Distribution',
+      code: `
       SELECT 
         CASE 
           WHEN HOUR(date_time) BETWEEN 5 AND 11 THEN 'Morning'
@@ -91,13 +98,14 @@ async function getAccidentTimeDistribution() {
       FROM Accidents
       GROUP BY time_of_day
       ORDER BY accident_count DESC
-    `);
-  return results;
-}
-
-// 6. Compare emergency service response across different user roles
-async function getResponseTimeByUserRole() {
-  const [results] = await db.query(`
+      `,
+      description: 'Analyze the time distribution of accidents based on severity and time of day.',
+      apiEndpoint: 'getAccidentTimeDistribution',
+      results: 'Loading...',
+    },
+    {
+      title: 'Response Time by User Role',
+      code: `
       SELECT 
         u.user_role,
         COUNT(DISTINCT a.accident_id) as total_accident_involvement,
@@ -113,13 +121,14 @@ async function getResponseTimeByUserRole() {
       JOIN EmergencyServices es ON a.accident_id = es.accident_id
       GROUP BY u.user_role
       ORDER BY total_accident_involvement DESC
-    `);
-  return results;
-}
-
-// 7. Analyze geographical spread of accidents
-async function getAccidentGeographicalSpread() {
-  const [results] = await db.query(`
+      `,
+      description: 'Compare emergency service response times across different user roles.',
+      apiEndpoint: 'getResponseTimeByUserRole',
+      results: 'Loading...',
+    },
+    {
+      title: 'Accident Geographical Spread',
+      code: `
       SELECT 
         ROUND(MIN(latitude), 2) as min_latitude,
         ROUND(MAX(latitude), 2) as max_latitude,
@@ -135,13 +144,14 @@ async function getAccidentGeographicalSpread() {
         ) as coverage_area
       FROM Locations l
       JOIN Accidents a ON l.location_id = a.location_id
-    `);
-  return results;
-}
-
-// 8. Identify most frequent accident causes
-async function getMostFrequentAccidentCauses() {
-  const [results] = await db.query(`
+      `,
+      description: 'Analyze the geographical spread of accidents based on accident locations.',
+      apiEndpoint: 'getAccidentGeographicalSpread',
+      results: 'Loading...',
+    },
+    {
+      title: 'Most Frequent Accident Causes',
+      code: `
       SELECT 
         SUBSTRING_INDEX(SUBSTRING_INDEX(description, 'due to', -1), '.', 1) as cause,
         COUNT(*) as occurrence_count,
@@ -150,13 +160,14 @@ async function getMostFrequentAccidentCauses() {
       GROUP BY cause
       ORDER BY occurrence_count DESC
       LIMIT 10
-    `);
-  return results;
-}
-
-// 9. Calculate user reporting patterns
-async function getUserReportingPatterns() {
-  const [results] = await db.query(`
+      `,
+      description: 'Identify the most frequent causes of accidents.',
+      apiEndpoint: 'getMostFrequentAccidentCauses',
+      results: 'Loading...',
+    },
+    {
+      title: 'User Reporting Patterns',
+      code: `
       SELECT 
         user_id,
         COUNT(*) as total_reports,
@@ -170,13 +181,15 @@ async function getUserReportingPatterns() {
       GROUP BY user_id
       ORDER BY total_reports DESC
       LIMIT 10
-    `);
-  return results;
-}
-
-// 10. Analyze intersection complexity
-async function getIntersectionComplexity() {
-  const [results] = await db.query(`
+      `,
+      description:
+        'Calculate user reporting patterns, including the percentage of unique accidents reported by each user.',
+      apiEndpoint: 'getUserReportingPatterns',
+      results: 'Loading...',
+    },
+    {
+      title: 'Intersection Complexity',
+      code: `
       SELECT 
         l.intersection,
         COUNT(*) as total_accidents,
@@ -198,13 +211,14 @@ async function getIntersectionComplexity() {
       HAVING total_accidents > 1
       ORDER BY total_accidents DESC
       LIMIT 10
-    `);
-  return results;
-}
-
-// 11. Track emergency service deployment patterns
-async function getEmergencyServiceDeployment() {
-  const [results] = await db.query(`
+      `,
+      description: 'Analyze the complexity of accidents at intersections, including severity index and response time.',
+      apiEndpoint: 'getIntersectionComplexity',
+      results: 'Loading...',
+    },
+    {
+      title: 'Emergency Service Deployment',
+      code: `
       SELECT 
         service_type,
         ROUND(AVG(response_time), 2) as avg_response_time,
@@ -216,13 +230,14 @@ async function getEmergencyServiceDeployment() {
         ) as delayed_response_percentage
       FROM EmergencyServices
       GROUP BY service_type
-    `);
-  return results;
-}
-
-// 12. Analyze temporal accident escalation
-async function getAccidentEscalationTrends() {
-  const [results] = await db.query(`
+      `,
+      description: 'Track emergency service deployment patterns based on service types and response times.',
+      apiEndpoint: 'getEmergencyServiceDeployment',
+      results: 'Loading...',
+    },
+    {
+      title: 'Accident Escalation Trends',
+      code: `
       SELECT 
         YEAR(date_time) as year,
         MONTH(date_time) as month,
@@ -240,13 +255,14 @@ async function getAccidentEscalationTrends() {
       FROM Accidents
       GROUP BY year, month
       ORDER BY year, month
-    `);
-  return results;
-}
-
-// 13. Identify high-risk user groups
-async function getHighRiskUserGroups() {
-  const [results] = await db.query(`
+      `,
+      description: 'Analyze the escalation of accidents over time, including trends in severity.',
+      apiEndpoint: 'getAccidentEscalationTrends',
+      results: 'Loading...',
+    },
+    {
+      title: 'High-Risk User Groups',
+      code: `
       SELECT 
         u.user_role,
         COUNT(DISTINCT a.accident_id) as total_accidents,
@@ -262,13 +278,14 @@ async function getHighRiskUserGroups() {
       JOIN Accidents a ON ua.accident_id = a.accident_id
       GROUP BY u.user_role
       ORDER BY total_accidents DESC
-    `);
-  return results;
-}
-
-// 14. Calculate location vulnerability index
-async function getLocationVulnerabilityIndex() {
-  const [results] = await db.query(`
+      `,
+      description: 'Identify high-risk user groups based on accident involvement and severity.',
+      apiEndpoint: 'getHighRiskUserGroups',
+      results: 'Loading...',
+    },
+    {
+      title: 'Location Vulnerability Index',
+      code: `
       SELECT 
         l.street,
         COUNT(*) as total_accidents,
@@ -289,13 +306,14 @@ async function getLocationVulnerabilityIndex() {
       GROUP BY l.street
       ORDER BY vulnerability_index DESC
       LIMIT 10
-    `);
-  return results;
-}
-
-// 15. Track multi-service accident responses
-async function getMultiServiceAccidents() {
-  const [results] = await db.query(`
+      `,
+      description: 'Calculate the location vulnerability index based on accident severity and response time.',
+      apiEndpoint: 'getLocationVulnerabilityIndex',
+      results: 'Loading...',
+    },
+    {
+      title: 'Multi-Service Accident Responses',
+      code: `
       SELECT 
         a.accident_id,
         a.date_time,
@@ -308,13 +326,15 @@ async function getMultiServiceAccidents() {
       HAVING service_types_involved > 1
       ORDER BY service_types_involved DESC
       LIMIT 20
-    `);
-  return results;
-}
-
-// 16. Analyze Cost Impact of Accidents
-async function getAccidentCostAnalysis() {
-  const [results] = await db.query(`
+      `,
+      description:
+        'Track multi-service accident responses, identifying incidents with multiple service types involved.',
+      apiEndpoint: 'getMultiServiceAccidents',
+      results: 'Loading...',
+    },
+    {
+      title: 'Accident Cost Analysis',
+      code: `
       SELECT 
         severity,
         COUNT(*) as total_accidents,
@@ -342,13 +362,14 @@ async function getAccidentCostAnalysis() {
       FROM Accidents
       GROUP BY severity
       ORDER BY total_estimated_cost DESC
-    `);
-  return results;
-}
-
-// 17. Analyze User Fatigue and Accident Involvement
-async function getUserFatigueAnalysis() {
-  const [results] = await db.query(`
+      `,
+      description: 'Analyze the cost impact of accidents based on severity and estimate average costs.',
+      apiEndpoint: 'getAccidentCostAnalysis',
+      results: 'Loading...',
+    },
+    {
+      title: 'User Fatigue and Accident Involvement',
+      code: `
       SELECT 
         u.user_id,
         u.name,
@@ -381,13 +402,15 @@ async function getUserFatigueAnalysis() {
       HAVING total_accidents > 3
       ORDER BY night_accident_percentage DESC
       LIMIT 15
-    `);
-  return results;
-}
-
-// 18. Analyze Accident Communication and Reporting Efficiency
-async function getAccidentReportingEfficiency() {
-  const [results] = await db.query(`
+      `,
+      description:
+        'Analyze the relationship between user fatigue and accident involvement, particularly during night hours.',
+      apiEndpoint: 'getUserFatigueAnalysis',
+      results: 'Loading...',
+    },
+    {
+      title: 'Accident Reporting Efficiency',
+      code: `
       SELECT 
         u.user_role,
         COUNT(DISTINCT ua.accident_id) as total_reported_accidents,
@@ -414,13 +437,14 @@ async function getAccidentReportingEfficiency() {
       LEFT JOIN EmergencyServices es ON a.accident_id = es.accident_id
       GROUP BY u.user_role
       ORDER BY total_reported_accidents DESC
-    `);
-  return results;
-}
-
-// 19. Analyze Cross-Involvement in Multiple Accidents
-async function getCrossInvolvementAnalysis() {
-  const [results] = await db.query(`
+      `,
+      description: 'Analyze the efficiency of accident reporting and communication based on response times.',
+      apiEndpoint: 'getAccidentReportingEfficiency',
+      results: 'Loading...',
+    },
+    {
+      title: 'Cross-Involvement in Multiple Accidents',
+      code: `
       SELECT 
         u.user_id,
         u.name,
@@ -447,13 +471,15 @@ async function getCrossInvolvementAnalysis() {
       HAVING total_accidents > 2
       ORDER BY severe_accidents DESC, total_accidents DESC
       LIMIT 20
-    `);
-  return results;
-}
-
-// 20. Comprehensive Emergency Resource Allocation Analysis
-async function getEmergencyResourceAllocation() {
-  const [results] = await db.query(`
+      `,
+      description:
+        'Analyze the cross-involvement patterns of users in multiple accidents, with a focus on direct involvement.',
+      apiEndpoint: 'getCrossInvolvementAnalysis',
+      results: 'Loading...',
+    },
+    {
+      title: 'Emergency Resource Allocation',
+      code: `
       SELECT 
         es.service_type,
         COUNT(DISTINCT es.accident_id) as total_deployments,
@@ -485,29 +511,144 @@ async function getEmergencyResourceAllocation() {
       JOIN Accidents a ON es.accident_id = a.accident_id
       GROUP BY es.service_type
       ORDER BY total_deployments DESC
-    `);
-  return results;
-}
+      `,
+      description: 'Comprehensive analysis of emergency resource allocation, including response times and coverage.',
+      apiEndpoint: 'getEmergencyResourceAllocation',
+      results: 'Loading...',
+    },
+  ];
 
-export {
-  getMostDangerousLocations,
-  getEmergencyServiceEfficiency,
-  getUserInvolvementBySeverity,
-  getSeasonalAccidentTrends,
-  getAccidentTimeDistribution,
-  getResponseTimeByUserRole,
-  getAccidentGeographicalSpread,
-  getMostFrequentAccidentCauses,
-  getUserReportingPatterns,
-  getIntersectionComplexity,
-  getEmergencyServiceDeployment,
-  getAccidentEscalationTrends,
-  getHighRiskUserGroups,
-  getLocationVulnerabilityIndex,
-  getMultiServiceAccidents,
-  getAccidentCostAnalysis,
-  getUserFatigueAnalysis,
-  getAccidentReportingEfficiency,
-  getCrossInvolvementAnalysis,
-  getEmergencyResourceAllocation,
+  const [queryResults, setQueryResults] = useState(queries);
+
+  useEffect(() => {
+    const fetchResults = async () => {
+      const updatedQueries = await Promise.all(
+        queries.map(async query => {
+          try {
+            console.log(`Fetching results for ${query.apiEndpoint}...`);
+            const response = await axios.get(`http://localhost:3001/api/${query.apiEndpoint}`);
+            console.log(`Fetched results for ${query.title}:`, response.data);
+            return { ...query, results: JSON.stringify(response.data, null, 2) };
+          } catch (error) {
+            console.error(`Error fetching results for ${query.title}:`, error);
+            return { ...query, results: `Error fetching results for ${query.apiEndpoint}` };
+          }
+        })
+      );
+      setQueryResults(updatedQueries);
+    };
+
+    fetchResults();
+  }, []);
+
+  const [areAllExpanded, setAreAllExpanded] = useState(false);
+
+  const toggleExpandAll = () => {
+    setAreAllExpanded(!areAllExpanded);
+  };
+
+  return (
+    <section id="Queries" className="py-16">
+      <div className="max-w-6xl mx-auto px-6 lg:px-8">
+        <h2 className="text-4xl font-bold text-primary text-center mb-12">SQL Queries</h2>
+
+        {/* Collapse/Expand All Buttons */}
+        <div className="flex justify-center mb-8">
+          <button
+            onClick={toggleExpandAll}
+            className="bg-secondary text-white py-2 px-6 rounded-md flex items-center gap-2"
+          >
+            <i className={`bx ${areAllExpanded ? 'bx-chevron-up' : 'bx-chevron-down'}`}></i>
+            {areAllExpanded ? 'Collapse All' : 'Expand All'}
+          </button>
+        </div>
+
+        <div className="space-y-8">
+          {queryResults.map((query, index) => (
+            <QueryRow
+              key={index}
+              title={query.title}
+              description={query.description}
+              code={query.code}
+              results={query.results}
+              isExpanded={areAllExpanded} // Pass the global state to each row
+            />
+          ))}
+        </div>
+      </div>
+    </section>
+  );
 };
+
+const QueryRow = ({ title, description, code, results, isExpanded }) => {
+  const [isRowExpanded, setIsRowExpanded] = useState(isExpanded); // use prop value for initial state
+
+  // Ensure each row responds to global expand/collapse state
+  React.useEffect(() => {
+    setIsRowExpanded(isExpanded);
+  }, [isExpanded]);
+
+  const hasResults = Array.isArray(results) && results.length > 0;
+
+  return (
+    <div className="bg-secondary shadow-lg rounded-lg">
+      <div className="flex justify-between items-center px-6 py-4 border-b border-gray-800">
+        <h3 className="text-lg font-semibold">{title}</h3>
+        <button
+          onClick={() => setIsRowExpanded(!isRowExpanded)}
+          className="text-xl focus:outline-none"
+          aria-label="Toggle View"
+        >
+          <i className={`bx ${isRowExpanded ? 'bx-chevron-up' : 'bx-chevron-down'}`}></i>
+        </button>
+      </div>
+      {isRowExpanded && (
+        <div className="px-6 py-4 space-y-6">
+          <div>
+            <p className="text-sm text-gray-400 mb-4">{description}</p>
+            <h4 className="text-md font-medium mb-2">SQL Code:</h4>
+            <pre className="bg-primary p-4 rounded-lg text-sm overflow-x-auto">
+              <code>{code}</code>
+            </pre>
+          </div>
+          <div>
+            <h4 className="text-md font-medium mb-2">Results:</h4>
+            <div className="overflow-x-auto bg-gray-900 rounded-lg p-4 max-h-64">
+              {hasResults ? (
+                <table className="table-auto w-full text-sm text-left text-gray-400">
+                  <thead className="text-xs text-gray-300 uppercase bg-gray-800">
+                    <tr>
+                      {/* Dynamically generate table headers */}
+                      {Object.keys(results[0]).map(key => (
+                        <th key={key} className="px-4 py-2">
+                          {key}
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {results.map((row, index) => (
+                      <tr key={index} className={`border-b border-gray-700 ${index % 2 === 0 ? 'bg-gray-800' : ''}`}>
+                        {Object.values(row).map((value, i) => (
+                          <td key={i} className="px-4 py-2">
+                            {value}
+                          </td>
+                        ))}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              ) : (
+                <div className="text-center text-gray-400 py-4">
+                  <p>No Results Found</p>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default QueriesSection;
