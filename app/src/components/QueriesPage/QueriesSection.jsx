@@ -581,24 +581,29 @@ const QueriesSection = () => {
 };
 
 const QueryRow = ({ title, description, code, results, isExpanded }) => {
-  const [isRowExpanded, setIsRowExpanded] = useState(isExpanded); // use prop value for initial state
+  const [isRowExpanded, setIsRowExpanded] = useState(isExpanded);
 
-  // Ensure each row responds to global expand/collapse state
+  // Synchronize row expansion state with global expand/collapse state
   React.useEffect(() => {
     setIsRowExpanded(isExpanded);
   }, [isExpanded]);
 
+  const handleToggleExpand = () => {
+    setIsRowExpanded(!isRowExpanded);
+  };
+
   return (
     <div className="bg-secondary shadow-lg rounded-lg">
-      <div className="flex justify-between items-center px-6 py-4 border-b border-gray-800">
+      {/* Make the header container clickable */}
+      <div
+        onClick={handleToggleExpand}
+        className="flex justify-between items-center px-6 py-4 border-b border-gray-800 cursor-pointer"
+        role="button"
+        aria-expanded={isRowExpanded}
+        aria-label={`Toggle ${title}`}
+      >
         <h3 className="text-lg font-semibold">{title}</h3>
-        <button
-          onClick={() => setIsRowExpanded(!isRowExpanded)}
-          className="text-xl focus:outline-none"
-          aria-label="Toggle View"
-        >
-          <i className={`bx ${isRowExpanded ? 'bx-chevron-up' : 'bx-chevron-down'}`}></i>
-        </button>
+        <i className={`bx ${isRowExpanded ? 'bx-chevron-up' : 'bx-chevron-down'} text-xl`}></i>
       </div>
       {isRowExpanded && (
         <div className="px-6 py-4 space-y-6">
