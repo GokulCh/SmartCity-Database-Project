@@ -8,16 +8,6 @@ const port = 3001;
 app.use(cors()); // Add this line to enable CORS
 app.use(express.json());
 
-app.post('/api/', async (req, res) => {
-  try {
-    const queryNames = Object.keys(distinctQueries);
-    res.json(queryNames);
-  } catch (err) {
-    console.error('Error listing queries:', err);
-    res.status(500).send('Error listing queries');
-  }
-});
-
 app.get('/api/:name', async (req, res) => {
   const { name } = req.params;
   const queryFunction = distinctQueries[name];
