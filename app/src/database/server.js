@@ -33,7 +33,6 @@ const calculateDistance = (lat1, lon1, lat2, lon2) => {
 app.get('/api/query', (req, res) => {
   const queryNames = Object.keys(distinctQueries);
   res.json({ message: "Valid API's", queryNames });
-  console.log(queryNames);
 });
 
 // New route to get closest locations based on coordinates (lat, lng)

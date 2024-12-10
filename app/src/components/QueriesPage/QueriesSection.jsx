@@ -525,9 +525,7 @@ ORDER BY total_reported_accidents DESC;
       const updatedQueries = await Promise.all(
         queries.map(async query => {
           try {
-            console.log(`Fetching results for ${query.apiEndpoint}...`);
             const response = await axios.get(`http://localhost:3001/api/query/${query.apiEndpoint}`);
-            console.log(`Fetched results for ${query.title}:`, response.data);
             return { ...query, results: JSON.stringify(response.data, null, 2) };
           } catch (error) {
             console.error(`Error fetching results for ${query.title}:`, error);
