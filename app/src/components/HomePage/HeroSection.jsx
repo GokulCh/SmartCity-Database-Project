@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const features = [
   {
@@ -45,12 +46,14 @@ const HeroSection = () => {
       </div>
 
       <div id="HeroSectionGetStartedButton" className="mt-10">
-        <button
-          className="btn btn-primary text-white bg-gradient-to-r from-blue-500 to-blue-700 p-2 px-3 rounded-3xl shadow-lg mx-4 
+        <Link to="/TrafficMap">
+          <button
+            className="btn btn-primary text-white bg-gradient-to-r from-blue-500 to-blue-700 p-2 px-3 rounded-3xl shadow-lg mx-4 
       transition-all duration-300 hover:from-blue-400 hover:to-blue-600"
-        >
-          Get Started
-        </button>
+          >
+            Get Started
+          </button>
+        </Link>
       </div>
 
       <div id="HeroSectionScrollDownArrow" className="absolute bottom-10 text-center">

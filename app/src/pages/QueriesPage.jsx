@@ -2,7 +2,7 @@ import React from 'react';
 import HeroSection from '../components/QueriesPage/HeroSection';
 import QueriesSection from '../components/QueriesPage/QueriesSection';
 
-function Queries() {
+function QueriesPage() {
   return (
     <>
       <HeroSection />
@@ -11,4 +11,4 @@ function Queries() {
   );
 }
 
-export default Queries;
+export default QueriesPage;

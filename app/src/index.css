@@ -1,10 +1,16 @@
+/* ----------------------------------------------
+ * Imports
+ * ---------------------------------------------- */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* ----------------------------------------------
+  * CSS Variables
+  * ---------------------------------------------- */
 :root {
+  /* Theme Colors */
   --primary: #3b82f6;
   --primary-dark: #2563eb;
   --secondary: #64748b;
@@ -12,15 +18,23 @@
   --success: #22c55e;
   --warning: #f59e0b;
   --danger: #ef4444;
+
+  /* Background Colors */
   --background: #05070a;
   --background-secondary: #111827;
+
+  /* Border and Text Colors */
   --border: #1f2937;
   --text-primary: #9ca3af;
   --text-secondary: #94a0b8;
   --border-color: #e5e7eb;
 }
 
+/* ----------------------------------------------
+  * Base Styles
+  * ---------------------------------------------- */
 @layer base {
+  /* General Reset */
   html {
     scroll-behavior: smooth;
   }
@@ -29,9 +43,10 @@
     font-family: 'Inter', sans-serif;
     color: var(--text-secondary);
     background-color: var(--background);
-    background-image: radial-gradient(100% 100% at 50% -60%, rgb(0, 128, 250, 0.3), transparent);
+    background-image: radial-gradient(100% 100% at 50% -60%, rgba(0, 128, 250, 0.3), transparent);
   }
 
+  /* Text Colors */
   .text-primary {
     color: var(--text-primary);
   }
@@ -40,6 +55,7 @@
     color: var(--text-secondary);
   }
 
+  /* Background Colors */
   .bg-primary {
     background-color: var(--background);
   }
@@ -48,6 +64,7 @@
     background-color: var(--background-secondary);
   }
 
+  /* Typography */
   h1,
   h2,
   h3,
@@ -58,76 +75,44 @@
   }
 }
 
-/* Change color of all bx icons globally */
+/* ----------------------------------------------
+  * Component Styles
+  * ---------------------------------------------- */
+
+/* Placeholder Map Section */
+.map-section {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.search-bar {
+  width: 80%; /* Adjust width as needed */
+  margin-bottom: 10px;
+}
+
+.search-bar input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+/* Icon Styling */
 .bx {
-  color: var(--primary);
-  /* or any color you want */
+  color: var(--primary); /* Default icon color */
 }
 
-/* Optional: You can also style the hover state if needed */
 .bx:hover {
-  color: var(--primary-dark);
-  /* Color change on hover */
+  color: var(--primary-dark); /* Hover color for icons */
 }
 
-/* 
-@layer components {
-  .btn {
-    @apply px-4 py-2 rounded-full font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2;
-  }
+/* ----------------------------------------------
+  * Custom CSS Animations
+  * ---------------------------------------------- */
 
-  .btn-primary {
-    @apply btn bg-primary text-white hover:bg-primary-dark focus:ring-primary;
-  }
-
-  .btn-secondary {
-    @apply btn bg-secondary text-white hover:bg-opacity-90 focus:ring-secondary;
-  }
-
-  .input-field {
-    @apply w-full p-3 border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-primary transition-all duration-200;
-  }
-
-  .textarea-field {
-    @apply w-full p-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary transition-all duration-200;
-  }
-
-  .card {
-    @apply bg-white rounded-lg shadow-md p-6 transition-all duration-200;
-  }
-
-  .nav-item {
-    @apply text-gray-700 text-sm p-2 px-3 hover:bg-gray-200 hover:rounded-md focus:outline-none focus:bg-gray-300 transition-all duration-200;
-  }
-
-  .section-container {
-    @apply max-w-6xl mx-auto px-4 sm:px-6 lg:px-8;
-  }
-
-  .section-title {
-    @apply text-3xl font-bold text-gray-800 mb-4;
-  }
-
-  .section-description {
-    @apply text-lg text-gray-600 mb-8;
-  }
-
-  .feature-icon {
-    @apply text-3xl text-primary mb-2;
-  }
-
-  .feature-title {
-    @apply text-lg font-semibold text-gray-700 mb-2;
-  }
-
-  .feature-description {
-    @apply text-sm text-gray-600 text-center;
-  }
-} */
-
-/* Custom CSS Animations */
-
-/* Light Sweep */
+/* Light Sweep Animation */
 @keyframes lightSweep {
   0% {
     transform: translateX(-100%);
@@ -165,16 +150,14 @@
   animation: lightSweep 2s ease-in-out infinite;
 }
 
-/* Float */
+/* Float Animation */
 @keyframes float {
   0% {
     transform: translateY(0px);
   }
-
   50% {
     transform: translateY(10px);
   }
-
   100% {
     transform: translateY(0px);
   }
@@ -196,12 +179,11 @@
   animation-delay: 0.4s;
 }
 
-/* Fade In */
+/* Fade In Animation */
 @keyframes fadeIn {
   from {
     opacity: 0;
   }
-
   to {
     opacity: 1;
   }
@@ -219,7 +201,9 @@
   animation: fadeIn 1s ease-in-out;
 }
 
-/* Scrollbar */
+/* ----------------------------------------------
+  * Custom Scrollbar Styles
+  * ---------------------------------------------- */
 ::-webkit-scrollbar {
   width: 4px;
 }
