@@ -49,21 +49,14 @@ To set up the project locally, follow these steps:
    cd cmsc408-fa2024-proj-blue
    ```
 
-2. **Set up the Conda environment:**
-
-   ```sh
-   conda env create -f .conda/environment.yml
-   conda activate cmsc408-fa2024-proj-blue
-   ```
-
-3. **Install the dependencies:**
+2. **Install the dependencies:**
 
    ```sh
    cd app
    npm install
    ```
 
-4. **Set up the database:**
+3. **Set up the database:**
 
    - Ensure you have MySQL installed and running.
    - Create a .env file in the app/src/database/ directory with the following content:
