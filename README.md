@@ -23,6 +23,7 @@ This project aims to improve road safety in urban environments by including acci
       - `TrafficMapPage/`: Components for the traffic map page.
     - `database/`: Database-related files and queries.
       - `queries/`: Contains query files for different database operations.
+      - `.env`: Environment variables for the database connection.
     - `pages/`: Main pages of the application.
     - `assets/`: Static assets like images and icons.
   - `index.css`: Global CSS styles.
@@ -49,21 +50,14 @@ To set up the project locally, follow these steps:
    cd cmsc408-fa2024-proj-blue
    ```
 
-2. **Set up the Conda environment:**
-
-   ```sh
-   conda env create -f .conda/environment.yml
-   conda activate cmsc408-fa2024-proj-blue
-   ```
-
-3. **Install the dependencies:**
+2. **Install the dependencies:**
 
    ```sh
    cd app
    npm install
    ```
 
-4. **Set up the database:**
+3. **Set up the database:**
 
    - Ensure you have MySQL installed and running.
    - Create a .env file in the app/src/database/ directory with the following content:
