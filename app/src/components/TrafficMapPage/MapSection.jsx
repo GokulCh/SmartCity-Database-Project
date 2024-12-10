@@ -1,100 +1,142 @@
-import React, { useState, useEffect } from 'react';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import React, { useState, useEffect, useRef } from 'react';
+import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
-import { GeoSearchControl, OpenStreetMapProvider } from 'leaflet-geosearch';
+import L from 'leaflet';
+import axios from 'axios';
 
-const MapSection = ({ location }) => {
-  // Set default location if no location is provided
-  const [coordinates, setCoordinates] = useState(location || { lat: 37.54129, lng: -77.434769 });
-  const [searchQuery, setSearchQuery] = useState('');
+// Custom marker icon to replace the default
+const customMarkerIcon = new L.Icon({
+  iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
+  iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
+  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41],
+});
+
+// Custom component to handle map interactions
+const MapController = ({ coordinates, onLocationFound }) => {
+  const map = useMap();
 
   useEffect(() => {
-    if (location) {
-      setCoordinates(location);
-    }
-  }, [location]);
+    // Center the map on the current coordinates
+    map.setView(coordinates, 13);
+  }, [coordinates, map]);
 
-  // Create the search control when the map is loaded
-  const handleMapLoad = map => {
-    const provider = new OpenStreetMapProvider();
-    const geoSearchControl = GeoSearchControl({
-      provider,
-      style: 'bar', // Optional style: 'bar', 'button', or 'input'
-      showMarker: true,
-      animateZoom: true,
-      resultFormat: ({ result }) => {
-        const { x, y } = result; // Get coordinates from the result
-        setCoordinates({ lat: y, lng: x });
-      },
-    });
+  return null;
+};
 
-    map.addControl(geoSearchControl);
-  };
+const MapSection = ({ location }) => {
+  // Default location (Richmond, VA)
+  const defaultLocation = { lat: 37.54129, lng: -77.434769 };
 
-  // Handle the search bar input change
-  const handleSearchChange = event => {
-    setSearchQuery(event.target.value);
-  };
+  // State management
+  const [coordinates, setCoordinates] = useState(location || defaultLocation);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+  const [error, setError] = useState(null);
 
-  // Optionally handle form submission or use search logic to update the map location
-  const handleSearchSubmit = async event => {
-    event.preventDefault();
-    if (searchQuery) {
-      const provider = new OpenStreetMapProvider();
-      const results = await provider.search(searchQuery);
+  // Perform geocoding search
+  const performSearch = async () => {
+    if (!searchQuery.trim()) return;
 
-      if (results.length > 0) {
-        const { x, y } = results[0]; // Get the coordinates from the search result
-        setCoordinates({ lat: y, lng: x });
+    try {
+      // Use Nominatim OpenStreetMap Geocoding API
+      const response = await axios.get('https://nominatim.openstreetmap.org/search', {
+        params: {
+          q: searchQuery,
+          format: 'json',
+          limit: 5,
+        },
+      });
+
+      if (response.data && response.data.length > 0) {
+        const results = response.data.map(result => ({
+          display_name: result.display_name,
+          lat: parseFloat(result.lat),
+          lon: parseFloat(result.lon),
+        }));
+
+        setSearchResults(results);
+        setError(null);
       } else {
-        alert('Location not found');
+        setError('No locations found');
+        setSearchResults([]);
       }
+    } catch (err) {
+      setError('Error searching for location');
+      setSearchResults([]);
+      console.error('Search error:', err);
     }
+  };
+
+  // Handle search form submission
+  const handleSearchSubmit = e => {
+    e.preventDefault();
+    performSearch();
+  };
+
+  // Handle selecting a specific search result
+  const handleSelectLocation = result => {
+    setCoordinates({
+      lat: result.lat,
+      lng: result.lon,
+    });
+    setSearchQuery(result.display_name);
+    setSearchResults([]);
   };
 
   return (
-    <section className="map-section">
-      {/* Search Bar */}
-      <div className="search-bar">
-        <form onSubmit={handleSearchSubmit}>
+    <section className="map-section relative w-full">
+      {/* Search Container */}
+      <div className="search-container relative z-[1000] w-full max-w-md mx-auto mb-4">
+        <form onSubmit={handleSearchSubmit} className="relative">
           <input
             type="text"
             value={searchQuery}
-            onChange={handleSearchChange}
+            onChange={e => setSearchQuery(e.target.value)}
             placeholder="Search location..."
-            style={{
-              width: '100%',
-              padding: '10px',
-              marginBottom: '10px',
-              borderRadius: '5px',
-              border: '1px solid #ccc',
-            }}
+            className="w-full p-3 border border-gray-300 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
+          <button
+            type="submit"
+            className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-blue-500 text-white p-2 rounded"
+          >
+            Search
+          </button>
         </form>
+
+        {/* Search Results Dropdown */}
+        {searchResults.length > 0 && (
+          <div className="absolute w-full bg-white border border-gray-300 rounded-lg shadow-lg mt-1 max-h-60 overflow-y-auto">
+            {searchResults.map((result, index) => (
+              <div
+                key={index}
+                onClick={() => handleSelectLocation(result)}
+                className="p-3 hover:bg-gray-100 cursor-pointer border-b last:border-b-0"
+              >
+                {result.display_name}
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Error Message */}
+        {error && <div className="text-red-500 mt-2 text-center">{error}</div>}
       </div>
 
       {/* Map Container */}
-      <MapContainer
-        center={coordinates}
-        zoom={13}
-        style={{
-          width: '80%', // Limit map width to 80% of the container width
-          height: '400px',
-          borderRadius: '15px', // Rounded corners
-          overflow: 'hidden', // Ensures the map fits within the rounded corners
-          background: 'transparent', // Make sure the background is transparent
-          margin: '0', // Ensure no margin
-        }}
-        whenCreated={handleMapLoad} // Load the search control when the map is created
-      >
+      <MapContainer center={coordinates} zoom={13} className="w-full h-[500px] rounded-lg" style={{ zIndex: 0 }}>
+        <MapController coordinates={coordinates} />
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         />
-        <Marker position={coordinates}>
+        <Marker position={coordinates} icon={customMarkerIcon}>
           <Popup>
             <span>
-              Location: {coordinates.lat}, {coordinates.lng}
+              Location: {coordinates.lat.toFixed(4)}, {coordinates.lng.toFixed(4)}
             </span>
           </Popup>
         </Marker>

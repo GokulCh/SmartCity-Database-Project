@@ -36,7 +36,7 @@ const InformationSection = () => {
   return (
     <section id="Information" className="py-16">
       <div className="max-w-6xl mx-auto text-center px-4 sm:px-6 lg:px-8">
-        <h2 className="text-3xl font-bold text-primary">Accident Information</h2>
+        <h2 className="text-3xl font-bold text-primary">Latest Accident Information</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 mt-8">
           {/* Slice the data array to display only the first 5 items */}
           {data.slice(0, 5).map(item => (
@@ -49,12 +49,12 @@ const InformationSection = () => {
 };
 
 const Card = ({ data }) => {
-  const { location, time, severity, description } = data;
+  const { location, date_time, severity, description } = data;
 
   return (
     <div className="flex flex-col items-start p-6 bg-secondary shadow-lg rounded-lg">
       <h3 className="text-lg font-semibold text-primary">{location}</h3>
-      <p className="text-md text-primary font-semibold">Time: {time}</p>
+      <p className="text-md text-primary font-semibold">Time: {date_time}</p>
       <p className="text-sm text-secondary">Severity: {severity}</p>
       <p className="text-sm mt-2 text-left">{description}</p>
     </div>

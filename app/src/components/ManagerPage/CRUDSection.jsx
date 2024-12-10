@@ -54,7 +54,7 @@ const CRUDSection = () => {
 
   const handleDelete = async id => {
     try {
-      await axios.delete(`http://localhost:3001/api/locations/${id}`);
+      await axios.delete(`http://localhost:3001/api/delete-location/${id}`);
       fetchData(); // Refresh data after deletion
     } catch (err) {
       setError(err.message);
@@ -79,7 +79,7 @@ const CRUDSection = () => {
   }
 
   return (
-    <section className="crud-section py-16">
+    <section id="CRUD" className="crud-section py-16">
       <div className="max-w-6xl mx-auto text-center px-4 sm:px-6 lg:px-8">
         <h2 className="text-3xl font-bold text-primary">Manage Locations</h2>
 
@@ -135,7 +135,7 @@ const CRUDSection = () => {
               <p className="text-sm text-secondary">Longitude: {item.longitude}</p>
               <div className="mt-4">
                 <button onClick={() => setEditingLocation(item)} className="btn bg-secondary mx-1">
-                  Edit
+                  <a href="#CRUD"> Edit </a>
                 </button>
                 <button onClick={() => handleDelete(item.location_id)} className="btn bg-secondary mx-1">
                   Delete

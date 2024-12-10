@@ -79,6 +79,72 @@ app.get('/api/locations/:id', async (req, res) => {
   }
 });
 
+// Create a new location
+app.post('/api/create-location', async (req, res) => {
+  try {
+    const locationData = req.body;
+
+    // Validate required fields
+    if (!locationData.street || !locationData.intersection) {
+      return res.status(400).send('Street and intersection are required');
+    }
+
+    const newLocationId = await new Locations().createLocation(locationData);
+
+    // Fetch the newly created location to return it
+    const newLocation = await new Locations().getLocationById(newLocationId);
+
+    res.status(201).json(newLocation);
+  } catch (err) {
+    console.error('Error creating location:', err);
+    res.status(500).send('Error creating location');
+  }
+});
+
+// Update an existing location
+app.put('/api/update-location/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const locationData = req.body;
+
+    // Validate required fields
+    if (!locationData.street || !locationData.intersection) {
+      return res.status(400).send('Street and intersection are required');
+    }
+
+    const affectedRows = await new Locations().updateLocation(id, locationData);
+
+    if (affectedRows === 0) {
+      return res.status(404).send('Location not found');
+    }
+
+    // Fetch the updated location to return it
+    const updatedLocation = await new Locations().getLocationById(id);
+
+    res.json(updatedLocation);
+  } catch (err) {
+    console.error('Error updating location:', err);
+    res.status(500).send('Error updating location');
+  }
+});
+
+// Delete a location
+app.delete('/api/delete-location/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const affectedRows = await new Locations().deleteLocation(id);
+
+    if (affectedRows === 0) {
+      return res.status(404).send('Location not found');
+    }
+
+    res.status(200).send('Location deleted successfully');
+  } catch (err) {
+    console.error('Error deleting location:', err);
+    res.status(500).send('Error deleting location');
+  }
+});
+
 // API routes for fetching data
 const fetchData = (model, errorMessage, res) => {
   model()
@@ -88,6 +154,22 @@ const fetchData = (model, errorMessage, res) => {
       res.status(500).send(errorMessage);
     });
 };
+
+app.get('/api/query/:queryName', (req, res) => {
+  // New route to fetch data based on query name
+  const { queryName } = req.params;
+  const query = distinctQueries[queryName];
+
+  if (!query) {
+    return res.status(404).send('Query not found');
+  }
+
+  fetchData(query, `Error fetching ${queryName}`, res);
+});
+
+app.get('/', (req, res) => {
+  res.send('Welcome to the Backend!');
+});
 
 // Route for users
 app.get('/api/users', (req, res) => fetchData(Users.prototype.getAllUsers, 'Error fetching users', res));
