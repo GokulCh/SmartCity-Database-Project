@@ -10,6 +10,8 @@ This project aims to improve road safety in urban environments by including acci
 - [Project Deliverable 8](https://github.com/cmsc-vcu/cmsc408-fa2024-proj-blue/tree/main/reports/deliverable_8)
 - [Project Deliverable 12](https://github.com/cmsc-vcu/cmsc408-fa2024-proj-blue/tree/main/reports/deliverable_12)
 
+[![Watch the video](https://img.youtube.com/vi/p8UdX2hZVeI/maxresdefault.jpg)](https://www.youtube.com/watch?v=p8UdX2hZVeI)
+
 ## Folder Structure
 
 - `.conda/`: Contains configuration files for the Conda environment.
